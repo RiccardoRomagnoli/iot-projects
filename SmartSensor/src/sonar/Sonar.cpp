@@ -16,7 +16,7 @@ float Sonar::sonarScan(){
     digitalWrite(trigPin,LOW);
     
     /* ricevi l’eco */
-    float tUS = pulseIn(echoPin, HIGH);
+    float tUS = pulseIn(echoPin, HIGH, SONARTIMEOUT);
     float t = tUS / 1000.0 / 1000.0 / 2;
     float d = t*vs;
     return d;
