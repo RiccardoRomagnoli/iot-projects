@@ -6,7 +6,12 @@ ManualTask::ManualTask(){
 }
   
 void ManualTask::init(int period){
-  Task::init(period); 
+  Task::init(period);
+  this->init();
+}
+
+void ManualTask::init(){
+
 }
   
 void ManualTask::tick(){

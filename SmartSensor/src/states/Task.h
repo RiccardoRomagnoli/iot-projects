@@ -11,6 +11,8 @@ public:
     myPeriod = period;  
     timeElapsed = 0;
   }
+  
+  virtual void init();
 
   virtual void tick() = 0;
 

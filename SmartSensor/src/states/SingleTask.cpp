@@ -10,6 +10,10 @@ SingleTask::SingleTask(){
 
 void SingleTask::init(int period){
   Task::init(period);
+  this->init();
+}
+
+void SingleTask::init(){
   attivo = false;
   for(int i = 0; i < POSITIONS; i++){
     results[i] = 0;

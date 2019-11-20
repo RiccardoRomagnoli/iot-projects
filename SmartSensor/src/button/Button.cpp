@@ -9,3 +9,9 @@ Button::Button(int pin){
 int Button::readButton(){
   return digitalRead(pin);
 }
+
+bool Button::checkPressed(){
+  if(readButton() == HIGH)
+    return true;
+  return false;
+}

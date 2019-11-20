@@ -7,7 +7,8 @@ class ManualTask: public Task {
 
 public:
   ManualTask();
-  void init(int period);  
+  void init(int period); 
+  void init(); 
   void tick();
 };
 

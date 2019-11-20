@@ -5,6 +5,7 @@ class Button {
 public:
   Button(int pin);
   int readButton();
+  bool checkPressed();
 private:
   int pin;
 };

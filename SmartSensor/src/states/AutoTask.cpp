@@ -6,7 +6,12 @@ AutoTask::AutoTask(){
 }
   
 void AutoTask::init(int period){
-  Task::init(period); 
+  Task::init(period);
+  this->init();
+}
+
+void AutoTask::init(){
+
 }
   
 void AutoTask::tick(){

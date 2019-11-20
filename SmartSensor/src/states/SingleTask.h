@@ -21,7 +21,8 @@ bool directionOrario;
 
 public:
   SingleTask();
-  void init(int period);  
+  void init(int period); 
+  void init(); 
   void tick();
 };
 

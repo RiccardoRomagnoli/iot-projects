@@ -7,7 +7,8 @@ class AutoTask: public Task {
 
 public:
   AutoTask();
-  void init(int period);  
+  void init(int period); 
+  void init();
   void tick();
 };
 
