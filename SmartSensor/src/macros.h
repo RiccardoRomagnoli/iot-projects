@@ -11,5 +11,5 @@
 #define ECHOSONAR 10
 #define TRIGSONAR 11
 #define POSITIONS 16
-
+#define ANGLE 180 / POSITIONS
 #endif

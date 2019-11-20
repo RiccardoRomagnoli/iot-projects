@@ -9,6 +9,7 @@
 Scheduler sched;
 
 void setup() {
+  Serial.begin(9600);
   sched.init(125);
   addSetModeTask(addSingleTask(),
                  addManualTask(),
