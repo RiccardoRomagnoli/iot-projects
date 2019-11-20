@@ -15,5 +15,5 @@ void AutoTask::init(){
 }
   
 void AutoTask::tick(){
-
+  Serial.println("Modalita auto attiva");
 }

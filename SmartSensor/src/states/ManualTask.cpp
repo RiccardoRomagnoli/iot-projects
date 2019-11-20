@@ -15,5 +15,5 @@ void ManualTask::init(){
 }
   
 void ManualTask::tick(){
-
+  Serial.println("Modalita manual attiva");
 }
