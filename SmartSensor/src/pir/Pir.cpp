@@ -13,6 +13,10 @@ void Pir::calibratePir(){
   Serial.println("Pir ready");
 }
 
+bool Pir::checkPirMovement(){
+  return readPir() ? true : false;
+}
+
 int Pir::readPir(){
   return digitalRead(pin);
 };

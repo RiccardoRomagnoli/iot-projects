@@ -7,6 +7,7 @@ public:
   Pir(int pin);
   void calibratePir();
   int readPir();
+  bool checkPirMovement();
 private:
   int pin;
 };
