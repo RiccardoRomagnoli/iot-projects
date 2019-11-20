@@ -10,5 +10,6 @@
 #define SERVOMOTOR 9
 #define ECHOSONAR 10
 #define TRIGSONAR 11
+#define POSITIONS 16
 
 #endif
