@@ -5,8 +5,12 @@
 
 class SetModeTask: public Task {
 
+Task* SingleTask;
+Task* ManualTask;
+Task* AutoTask;
+
 public:
-  SetModeTask();
+  SetModeTask(Task* SingleTask, Task* ManualTask, Task* AutoTask);
   void init(int period);  
   void tick();
 };
