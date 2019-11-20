@@ -14,6 +14,7 @@ class SingleTask: public Task {
 Pir* pir;
 Sonar* sonar;
 ServoMotor* servo;
+Led* led_d;
 float results[POSITIONS];
 bool attivo;
 int actualPosition;
