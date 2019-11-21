@@ -16,6 +16,7 @@ void BlinkTask::init(){
 
 void BlinkTask::setActive(bool active){
   active ? this->led->switchOn() : this->led->switchOff();
+  active ? this->state = OFF : this->state = ON;
   Task::setActive(active);
 }
 

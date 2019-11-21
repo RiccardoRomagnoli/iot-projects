@@ -12,7 +12,9 @@ public:
     timeElapsed = 0;
   }
   
-  virtual void init();
+  virtual void init() {
+
+  };
 
   virtual void tick() = 0;
 
@@ -30,7 +32,7 @@ public:
     return active;
   }
 
-  void setActive(bool active){
+  virtual void setActive(bool active){
     this->active = active;
   }
 
