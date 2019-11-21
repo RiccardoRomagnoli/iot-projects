@@ -8,6 +8,7 @@ class SerialCommunication{
         SerialCommunication();
         char* getMessage();
         void sendMessage(char* msgToSend);
+        void sendDistanceAngle(float distance, int angle);
 };
 
 
