@@ -37,18 +37,18 @@ void setup() {
   sched.addTask(t0);
 
 
-  Task* t1 = new SingleTask(t0, pir, sonar, servo, ledD);
-  t1->init(125);
+  Task* t1 = new SingleTask(t0, pir, sonar, servo, ledD, shared);
+  t1->init(25);
   t1->setActive(false);
   sched.addTask(t1);
 
   Task* t2 = new ManualTask();
-  t2->init(125);
+  t2->init(25);
   t2->setActive(true);
   sched.addTask(t2);
 
   Task* t3 = new AutoTask(t0, sonar, servo, shared);
-  t3->init(125);
+  t3->init(25);
   t3->setActive(false);
   sched.addTask(t3);
 

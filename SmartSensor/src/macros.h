@@ -6,7 +6,7 @@
 #define BUTTON_AUTO 5
 #define LED_D 6
 #define LED_A 7
-#define PIR 8
+#define PIR 2
 #define SERVOMOTOR 9
 #define ECHOSONAR 10
 #define TRIGSONAR 11
