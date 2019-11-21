@@ -20,7 +20,7 @@ void SingleTask::init(){
   for(int i = 0; i < POSITIONS; i++){
     results[i] = 0;
   }
-  actualPosition = ANGLE / 2;
+  actualPosition = 0;
   directionOrario = true;
 }
 

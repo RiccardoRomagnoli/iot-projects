@@ -23,10 +23,9 @@ private:
   bool alarm;
   bool alarmClockwise;
   bool alarmTracking;
-  float results[POSITIONS];
 
   void setAlarm(bool status);
-  void checkObject();
+  float checkObject();
   void checkEndScan();
 };
 

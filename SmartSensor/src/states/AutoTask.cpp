@@ -20,9 +20,6 @@ void AutoTask::init(int period){
 }
 
 void AutoTask::init(){
-  for(int i = 0; i < POSITIONS; i++){
-    results[i] = 0;
-  }
   actualPosition = 0;
   clockwise = true;
   servo->on();
@@ -30,16 +27,11 @@ void AutoTask::init(){
   
 void AutoTask::tick(){
   Serial.println("Modalita auto attiva");
-  checkObject();
+  float distance = checkObject();
+  //serial.sendDistanceAngle(distance, actualPosition * ANGLE + OFFSET);
   servo->setPosition(ANGLE * actualPosition + OFFSET);
   clockwise ? ++actualPosition : --actualPosition;
   checkEndScan();
-}
-
-void AutoTask::setAlarm(bool status){
-  alarm = status;
-  alarmClockwise = clockwise;
-  this->blinkTask->setActive(status);
 }
 
 void AutoTask::checkEndScan(){
@@ -50,18 +42,24 @@ void AutoTask::checkEndScan(){
     this->setAlarm(false);
 }
 
-void AutoTask::checkObject(){
+float AutoTask::checkObject(){
   float distance = sonar->sonarScan(); 
 
   if(distance >= D_MIN && distance <= D_MAX){
     //Object detected
     this->setAlarm(true);
-    this->results[actualPosition] = distance;
   }else if (distance > D_MAX){
+    distance = 0;
     //Object not detected
   }else if (distance < D_MIN){
     //Alarm With Tracking
     alarmTracking = true;
-    this->results[actualPosition] = distance;
   }
+  return distance;
+}
+
+void AutoTask::setAlarm(bool status){
+  alarm = status;
+  alarmClockwise = clockwise;
+  this->blinkTask->setActive(status);
 }
