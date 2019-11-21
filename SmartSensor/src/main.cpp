@@ -52,7 +52,7 @@ Task* addManualTask(){
 }
 
 Task* addAutoTask(){
-  AutoTask* t3 = new AutoTask();
+  AutoTask* t3 = new AutoTask(blinkTask);
   t3->init(125);
   t3->setActive(false);
   sched.addTask(t3);
