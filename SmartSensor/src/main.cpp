@@ -4,16 +4,24 @@
 #include "./states/SetModeTask.h"
 #include "./states/ManualTask.h"
 #include "./states/AutoTask.h"
+#include "./led/BlinkTask.h"
 #include "main.h"
+#include "macros.h"
 
 Scheduler sched;
+BlinkTask* blinkTask;
 
 void setup() {
   Serial.begin(9600);
   sched.init(125);
+  blinkTask = new BlinkTask(LED_D);
+  blinkTask->init(125);
+  blinkTask->setActive(false);
+
   addSetModeTask(addSingleTask(),
                  addManualTask(),
                  addAutoTask());
+  sched.addTask(blinkTask);
 }
 
 void loop() {
@@ -28,7 +36,7 @@ void addSetModeTask(Task* singleTask, Task* manualTask, Task* autoTask){
 }
 
 Task* addSingleTask(){
-  SingleTask* t1 = new SingleTask();
+  SingleTask* t1 = new SingleTask(blinkTask);
   t1->init(125);
   t1->setActive(false);
   sched.addTask(t1);
