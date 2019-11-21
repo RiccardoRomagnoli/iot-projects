@@ -11,6 +11,7 @@
 #define ECHOSONAR 10
 #define TRIGSONAR 11
 #define POSITIONS 16
+#define DEFAULT_EXECUTION_TIME 2000
 #define ANGLE 180 / POSITIONS
 #define D_MIN 0.2
 #define D_MAX 0.4

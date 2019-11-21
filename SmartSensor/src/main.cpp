@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "./scheduler/Scheduler.h"
+#include "./states/SharedState.h"
 #include "./states/SingleTask.h"
 #include "./states/SetModeTask.h"
 #include "./states/ManualTask.h"
@@ -20,20 +21,21 @@ void setup() {
   Serial.begin(9600);
   sched.init(25);
 
+  SharedState* shared = new SharedState(DEFAULT_EXECUTION_TIME/POSITIONS);
   Pir* pir = new Pir(PIR);
   Sonar* sonar = new Sonar(TRIGSONAR, ECHOSONAR);
   ServoMotor* servo = new ServoMotorImpl(SERVOMOTOR);
-  Light* ledD = new Led(LED_D);
   Light* ledA = new Led(LED_A);
   Button* singleButton = new Button(BUTTON_SINGLE);
   Button* manualButton = new Button(BUTTON_MANUAL);
   Button* autoButton = new Button(BUTTON_AUTO);
 
-  Task* t0 = new BlinkTask(ledD);
+  Task* t0 = new BlinkTask(new Led(LED_A));
   t0->init(50);
   t0->setActive(false);
   sched.addTask(t0);
 
+  // Input Led, not BlinkTask
   Task* t1 = new SingleTask(t0, pir, sonar, servo);
   t1->init(125);
   t1->setActive(false);
@@ -44,7 +46,7 @@ void setup() {
   t2->setActive(true);
   sched.addTask(t2);
 
-  Task* t3 = new AutoTask(t0, sonar, servo);
+  Task* t3 = new AutoTask(t0, sonar, servo, shared);
   t3->init(125);
   t3->setActive(false);
   sched.addTask(t3);
@@ -53,7 +55,6 @@ void setup() {
   t4->init(125);
   t4->setActive(true);
   sched.addTask(t4);
-
 }
 
 void loop() {

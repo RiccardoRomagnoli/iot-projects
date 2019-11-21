@@ -39,6 +39,10 @@ public:
   void setPeriod(int myPeriod){
     this->myPeriod = myPeriod;
   }
+
+  int getPeriod(){
+    return myPeriod;
+  }
 };
 
 #endif
