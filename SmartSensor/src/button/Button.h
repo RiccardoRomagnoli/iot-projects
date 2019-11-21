@@ -4,8 +4,7 @@
 class Button {
 public:
   Button(int pin);
-  int readButton();
-  bool checkPressed();
+  bool isPressed();
 private:
   int pin;
 };

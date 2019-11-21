@@ -21,9 +21,6 @@ public:
   void init(int period);  
   void init();
   void tick();
-private:
-  void checkButtonPressed();
-  void checkSerialReceived();
 };
 
 #endif

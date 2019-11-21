@@ -21,29 +21,20 @@ void SetModeTask::init(){
 }
   
 void SetModeTask::tick(){
-  checkButtonPressed();
-  checkSerialReceived();
-}
-
-void SetModeTask::checkButtonPressed(){
-  if(singleButton->checkPressed() && currentModeTask != singleTask){
+  if(singleButton->isPressed() && currentModeTask != singleTask){
     currentModeTask->setActive(false);
     currentModeTask = singleTask;
     currentModeTask->setActive(true);
     currentModeTask->init();
-  }else if(manualButton->checkPressed() && currentModeTask != manualTask){
+  }else if(manualButton->isPressed() && currentModeTask != manualTask){
     currentModeTask->setActive(false);
     currentModeTask = manualTask;
     currentModeTask->setActive(true);
     currentModeTask->init();
-  }else if(autoButton->checkPressed() && currentModeTask != autoTask){
+  }else if(autoButton->isPressed() && currentModeTask != autoTask){
     currentModeTask->setActive(false);
     currentModeTask = autoTask;
     currentModeTask->setActive(true);
     currentModeTask->init();
   }
-}
-
-void SetModeTask::checkSerialReceived(){
-  
 }

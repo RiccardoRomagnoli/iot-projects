@@ -6,12 +6,8 @@ Button::Button(int pin){
   pinMode(pin,INPUT);
 }
 
-int Button::readButton(){
-  return digitalRead(pin);
-}
-
-bool Button::checkPressed(){
-  if(readButton() == HIGH)
+bool Button::isPressed(){
+  if(digitalRead(pin) == HIGH)
     return true;
   return false;
 }
