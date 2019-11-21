@@ -2,7 +2,8 @@
 #include "Arduino.h"
 
 
-SingleTask::SingleTask(){
+SingleTask::SingleTask(Task* blinkTask){
+  this->blinkTask = blinkTask;
   pir = new Pir(PIR);
   sonar = new Sonar(TRIGSONAR, ECHOSONAR);
   servo = new ServoMotorImpl(SERVOMOTOR);
@@ -24,13 +25,12 @@ void SingleTask::init(){
 }
 
 void SingleTask::tick(){
+  blinkTask->setActive(false);
   if(attivo || pir->checkPirMovement()) {
    attivo = true;
    results[actualPosition] = sonar->sonarScan(); 
    if(results[actualPosition] >= 0.2 && results[actualPosition] <= 0.4){
-     led_d->switchOn();
-     delay(20);
-     led_d->switchOff();
+     blinkTask->setActive(true);
    }
    directionOrario ? actualPosition++ : actualPosition--;
    if(actualPosition == 16 || actualPosition == -1){

@@ -15,13 +15,14 @@ Pir* pir;
 Sonar* sonar;
 ServoMotor* servo;
 Led* led_d;
+Task* blinkTask;
 float results[POSITIONS];
 bool attivo;
 int actualPosition;
 bool directionOrario;
 
 public:
-  SingleTask();
+  SingleTask(Task* blinkTask);
   void init(int period); 
   void init(); 
   void tick();

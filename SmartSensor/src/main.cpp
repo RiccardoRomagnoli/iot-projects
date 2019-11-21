@@ -13,9 +13,9 @@ BlinkTask* blinkTask;
 
 void setup() {
   Serial.begin(9600);
-  sched.init(125);
+  sched.init(25);
   blinkTask = new BlinkTask(LED_D);
-  blinkTask->init(125);
+  blinkTask->init(50);
   blinkTask->setActive(false);
 
   addSetModeTask(addSingleTask(),
