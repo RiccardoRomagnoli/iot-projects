@@ -5,56 +5,57 @@
 #include "./states/ManualTask.h"
 #include "./states/AutoTask.h"
 #include "./led/BlinkTask.h"
+#include "./potenz/Potenziometro.h"
+#include "./led/Led.h"
+#include "./pir/Pir.h"
+#include "./servo/servo_motor_impl.h"
+#include "./sonar/Sonar.h"
+#include "./macros.h"
 #include "main.h"
 #include "macros.h"
 
 Scheduler sched;
-BlinkTask* blinkTask;
 
 void setup() {
   Serial.begin(9600);
   sched.init(25);
-  blinkTask = new BlinkTask(LED_D);
-  blinkTask->init(50);
-  blinkTask->setActive(false);
 
-  addSetModeTask(addSingleTask(),
-                 addManualTask(),
-                 addAutoTask());
-  sched.addTask(blinkTask);
+  Pir* pir = new Pir(PIR);
+  Sonar* sonar = new Sonar(TRIGSONAR, ECHOSONAR);
+  ServoMotor* servo = new ServoMotorImpl(SERVOMOTOR);
+  Light* ledD = new Led(LED_D);
+  Light* ledA = new Led(LED_A);
+  Button* singleButton = new Button(BUTTON_SINGLE);
+  Button* manualButton = new Button(BUTTON_MANUAL);
+  Button* autoButton = new Button(BUTTON_AUTO);
+
+  Task* t0 = new BlinkTask(ledD);
+  t0->init(50);
+  t0->setActive(false);
+  sched.addTask(t0);
+
+  Task* t1 = new SingleTask(t0, pir, sonar, servo);
+  t1->init(125);
+  t1->setActive(false);
+  sched.addTask(t1);
+
+  Task* t2 = new ManualTask();
+  t2->init(125);
+  t2->setActive(true);
+  sched.addTask(t2);
+
+  Task* t3 = new AutoTask(t0, sonar, servo);
+  t3->init(125);
+  t3->setActive(false);
+  sched.addTask(t3);
+
+  Task* t4 = new SetModeTask(t1, t2, t3, singleButton, manualButton, autoButton);
+  t4->init(125);
+  t4->setActive(true);
+  sched.addTask(t4);
+
 }
 
 void loop() {
   sched.schedule();
-}
-
-void addSetModeTask(Task* singleTask, Task* manualTask, Task* autoTask){
-  SetModeTask* t0 = new SetModeTask(singleTask, manualTask, autoTask);
-  t0->init(125);
-  t0->setActive(true);
-  sched.addTask(t0);
-}
-
-Task* addSingleTask(){
-  SingleTask* t1 = new SingleTask(blinkTask);
-  t1->init(125);
-  t1->setActive(false);
-  sched.addTask(t1);
-  return t1;
-}
-
-Task* addManualTask(){
-  ManualTask* t2 = new ManualTask();
-  t2->init(125);
-  t2->setActive(true);
-  sched.addTask(t2);
-  return t2;
-}
-
-Task* addAutoTask(){
-  AutoTask* t3 = new AutoTask(blinkTask);
-  t3->init(125);
-  t3->setActive(false);
-  sched.addTask(t3);
-  return t3;
 }

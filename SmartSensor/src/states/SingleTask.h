@@ -22,7 +22,7 @@ int actualPosition;
 bool directionOrario;
 
 public:
-  SingleTask(Task* blinkTask);
+  SingleTask(Task* blinkTask, Pir* pir, Sonar* sonar, ServoMotor* servo);
   void init(int period); 
   void init(); 
   void tick();

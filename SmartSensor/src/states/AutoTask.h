@@ -10,10 +10,11 @@
 class AutoTask: public Task {
 
 public:
-  AutoTask(Task* blinkTask);
+  AutoTask(Task* blinkTask, Sonar* sonar, ServoMotor* servo);
   void init(int period); 
   void init();
   void tick();
+  
 private:
   Sonar* sonar;
   ServoMotor* servo;

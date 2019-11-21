@@ -2,12 +2,11 @@
 #include "Arduino.h"
 
 
-SingleTask::SingleTask(Task* blinkTask){
+SingleTask::SingleTask(Task* blinkTask, Pir* pir, Sonar* sonar, ServoMotor* servo){
   this->blinkTask = blinkTask;
-  pir = new Pir(PIR);
-  sonar = new Sonar(TRIGSONAR, ECHOSONAR);
-  servo = new ServoMotorImpl(SERVOMOTOR);
-  led_d = new Led(LED_D);
+  this->pir = pir;
+  this->sonar = sonar;
+  this->servo = servo;
 }
 
 void SingleTask::init(int period){

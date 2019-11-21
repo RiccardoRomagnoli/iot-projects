@@ -17,7 +17,7 @@ Button* manualButton;
 Button* autoButton;
 
 public:
-  SetModeTask(Task* singleTask, Task* manualTask, Task* autoTask);
+  SetModeTask(Task* singleTask, Task* manualTask, Task* autoTask, Button* singleButtin, Button* manualButton, Button* autoButton);
   void init(int period);  
   void init();
   void tick();

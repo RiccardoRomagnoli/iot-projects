@@ -2,13 +2,13 @@
 #include "SetModeTask.h"
 #include "Task.h"
 
-SetModeTask::SetModeTask(Task* singleTask, Task* manualTask, Task* autoTask){
+SetModeTask::SetModeTask(Task* singleTask, Task* manualTask, Task* autoTask, Button* singleButtin, Button* manualButton, Button* autoButton){
   this->singleTask = singleTask;
   this->manualTask = manualTask;
   this->autoTask = autoTask;
-  this->singleButton = new Button(BUTTON_SINGLE);
-  this->manualButton = new Button(BUTTON_MANUAL);
-  this->autoButton = new Button(BUTTON_AUTO);
+  this->singleButton = singleButtin;
+  this->manualButton = manualButton;
+  this->autoButton = autoButton;
 }
   
 void SetModeTask::init(int period){

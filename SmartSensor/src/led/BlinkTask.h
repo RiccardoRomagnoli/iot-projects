@@ -5,14 +5,12 @@
 #include "./states/Task.h"
 
 class BlinkTask: public Task {
-
-  int pin;
   Light* led;
   enum { ON, OFF} state;
 
 public:
 
-  BlinkTask(int pin);  
+  BlinkTask(Light* led);  
   void init(int period);
   void init();
   void tick();

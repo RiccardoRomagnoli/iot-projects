@@ -8,10 +8,10 @@
 //raccolta dati, invio dati
 //spegnere servo al cambio modalità
 
-AutoTask::AutoTask(Task* blinkTask){
+AutoTask::AutoTask(Task* blinkTask, Sonar* sonar, ServoMotor* servo){
   this->blinkTask = blinkTask;
-  this->sonar = new Sonar(TRIGSONAR, ECHOSONAR);
-  this->servo = new ServoMotorImpl(SERVOMOTOR);
+  this->sonar = sonar;
+  this->servo = servo;
 }
   
 void AutoTask::init(int period){
