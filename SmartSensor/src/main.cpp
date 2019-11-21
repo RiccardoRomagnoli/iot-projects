@@ -25,6 +25,7 @@ void setup() {
   Pir* pir = new Pir(PIR);
   Sonar* sonar = new Sonar(TRIGSONAR, ECHOSONAR);
   ServoMotor* servo = new ServoMotorImpl(SERVOMOTOR);
+  Light* ledD = new Led(LED_D);
   Light* ledA = new Led(LED_A);
   Button* singleButton = new Button(BUTTON_SINGLE);
   Button* manualButton = new Button(BUTTON_MANUAL);
@@ -35,8 +36,8 @@ void setup() {
   t0->setActive(false);
   sched.addTask(t0);
 
-  // Input Led, not BlinkTask
-  Task* t1 = new SingleTask(t0, pir, sonar, servo);
+
+  Task* t1 = new SingleTask(t0, pir, sonar, servo, ledD);
   t1->init(125);
   t1->setActive(false);
   sched.addTask(t1);
