@@ -34,7 +34,7 @@ void setup() {
   t0->setActive(false);
   sched.addTask(t0);
 
-  Task* t1 = new SingleTask(t0, pir, sonar, servo);
+  Task* t1 = new SingleTask(t0, pir, sonar, servo, ledD);
   t1->init(125);
   t1->setActive(false);
   sched.addTask(t1);
