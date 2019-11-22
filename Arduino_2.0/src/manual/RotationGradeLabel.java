@@ -1,10 +1,13 @@
 package manual;
 
-import javax.swing.JLabel;
+import GUI.Settings;
+import serialCommunication.ManualSerialCommunication;
 
+@SuppressWarnings("serial")
 public class RotationGradeLabel extends MyLabel{
 	
-	public RotationGradeLabel() {
-		this.setText("10°");
+	public RotationGradeLabel(ManualSerialCommunication serial) {
+		serial.setRotationGradeLabel(this);
+		this.setText(Settings.getInitialManualAngle());
 	}
 }

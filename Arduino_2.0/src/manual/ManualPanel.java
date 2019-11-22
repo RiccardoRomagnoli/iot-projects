@@ -3,16 +3,18 @@ package manual;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import serialCommunication.ManualSerialCommunication;
+
+@SuppressWarnings("serial")
 public class ManualPanel extends JPanel{
 	
-	public ManualPanel() {
+	ManualButtonManagment buttons;
+	
+	public ManualPanel(ManualButtonManagment buttons, ManualSerialCommunication serial) {
 		
+		this.buttons = buttons;
 		
 		this.setLayout(new GridBagLayout());
 		MyGridBagConstraints c = new MyGridBagConstraints();
@@ -21,13 +23,14 @@ public class ManualPanel extends JPanel{
 		//prima riga (MOVE)
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridx = 1;
-		this.add(new ButtonSx(), c);
+		this.add(buttons.getButtonSx(), c);
 		
 		c.gridx = 2;
-		this.add(new RotationGradeLabel());
+		this.add(new RotationGradeLabel(serial));
+		
 		
 		c.gridx = 3;
-		this.add(new ButtonDx(), c);
+		this.add(buttons.getButtonDx(), c);
 		
 		//seconda riga (PRESENZA OGGETTO)
 		c.gridy = 1;
@@ -37,7 +40,7 @@ public class ManualPanel extends JPanel{
 		
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridx = 1;
-		this.add(new ObjectPresenceLabel(), c);		
+		this.add(new ObjectPresenceLabel(serial), c);		
 		
 		//terza riga (DISTANZA)
 		c.gridy=2;
@@ -47,6 +50,6 @@ public class ManualPanel extends JPanel{
 		
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridx = 1;
-		this.add(new DistanceLabel(), c);
+		this.add(new DistanceLabel(serial), c);
 	}
 }

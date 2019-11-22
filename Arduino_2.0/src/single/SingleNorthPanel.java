@@ -7,9 +7,11 @@ import manual.DistanceLabel;
 import manual.MyGridBagConstraints;
 import manual.MyStaticLabel;
 import manual.ObjectPresenceLabel;
+import serialCommunication.SingleSerialCommunication;
 
+@SuppressWarnings("serial")
 public class SingleNorthPanel extends JPanel{
-	public SingleNorthPanel() {
+	public SingleNorthPanel(SingleSerialCommunication serial) {
 		this.setLayout(new GridBagLayout());
 		MyGridBagConstraints c = new MyGridBagConstraints();
 		//Prima riga (E' PRESENTE UN OGGETTO?)
@@ -18,7 +20,7 @@ public class SingleNorthPanel extends JPanel{
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
-		this.add(new ObjectPresenceLabel(), c);	
+		this.add(new SingleObjectPresenceLabel(serial), c);	
 		
 		//Seconda riga(DISTANZA)
 		c.gridy = 1;
@@ -28,7 +30,7 @@ public class SingleNorthPanel extends JPanel{
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
-		this.add(new DistanceLabel(), c);
+	    this.add(new SingleDistanceLabel(serial), c);
 		
 		//Terza riga (Posizione radar)
 		c.gridy=2;
@@ -38,6 +40,6 @@ public class SingleNorthPanel extends JPanel{
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
-		this.add(new RadarPositionLabel(), c);
+		this.add(new RadarPositionLabel(serial), c);
 	}
 }

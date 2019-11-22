@@ -1,10 +1,12 @@
 package manual;
 
-import javax.swing.JLabel;
+import serialCommunication.ManualSerialCommunication;
 
+@SuppressWarnings("serial")
 public class DistanceLabel extends MyLabel{
 	
-	public DistanceLabel() {	
-		this.setText("1 metro");
+	public DistanceLabel(ManualSerialCommunication serial) {
+		serial.setDistanceLabel(this);
+		this.setText("-");
 	}
 }

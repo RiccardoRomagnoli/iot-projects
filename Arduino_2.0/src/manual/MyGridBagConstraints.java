@@ -3,6 +3,7 @@ package manual;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
+@SuppressWarnings("serial")
 public class MyGridBagConstraints extends GridBagConstraints{
 	
 	public MyGridBagConstraints() {

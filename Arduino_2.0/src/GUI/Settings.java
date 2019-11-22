@@ -5,9 +5,13 @@ public class Settings {
 	
 	private static final int MAIN_FRAME_HEIGHT = 500;
 	
-	private static final int REFRESH_TIME_MIN = 1;
+	private static final int REFRESH_TIME_MIN = 2;
 	
 	private static final int REFRESH_TIME_MAX = 10;
+	
+	private static final int SPEED_TICK_SPACING = 2;
+	
+	private static final String INITIAL_MANUAL_ANGLE = "90°";
 
 	/**
 	 * @return the mainFrameWidth
@@ -35,6 +39,14 @@ public class Settings {
 	 */
 	public static int getRefreshTimeMax() {
 		return REFRESH_TIME_MAX;
+	}
+
+	public static int getSpeedTickSpacing() {
+		return SPEED_TICK_SPACING;
+	}
+
+	public static String getInitialManualAngle() {
+		return INITIAL_MANUAL_ANGLE;
 	}
 	
 }

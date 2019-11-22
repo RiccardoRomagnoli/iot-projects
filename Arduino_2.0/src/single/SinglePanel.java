@@ -2,13 +2,16 @@ package single;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
-import southPanel.SouthPanel;
 
+import serialCommunication.SingleSerialCommunication;
+import singleeastPanel.EastPanel;
+
+@SuppressWarnings("serial")
 public class SinglePanel extends JPanel{
 	
-	public SinglePanel() {
+	public SinglePanel(SingleSerialCommunication serial) {
 		this.setLayout(new BorderLayout());
-		this.add(new SingleNorthPanel(), BorderLayout.CENTER);
-		this.add(new SouthPanel(), BorderLayout.EAST);
+		this.add(new SingleNorthPanel(serial), BorderLayout.CENTER);
+		this.add(new EastPanel(serial), BorderLayout.EAST);
 	}
 }

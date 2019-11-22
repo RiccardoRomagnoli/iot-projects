@@ -1,18 +1,20 @@
 package southPanel;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.LayoutManager;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class SouthPanel extends JPanel{
 	
 	public SouthPanel() {
-		this.setLayout((LayoutManager) new FlowLayout(FlowLayout.LEFT));
-		this.add(new MySlider());
+		MyBarChart barChart = new MyBarChart();
+		barChart.addDataToDataSet(2.03, "15°");
+		barChart.addDataToDataSet(3.08, "20°");
+		barChart.addDataToDataSet(4.5, "30°");
+		barChart.addDataToDataSet(7.2, "18°");
+		barChart.addDataToDataSet(9.8, "106°");
+		//barChart.clearDataSet();
+		this.add(new JLabel(new ImageIcon(barChart.getBarChartImage())));
 	}
 }

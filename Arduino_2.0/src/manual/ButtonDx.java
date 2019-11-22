@@ -1,10 +1,27 @@
 package manual;
 
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 
+import serialCommunication.ManualSerialCommunication;
+
+@SuppressWarnings("serial")
 public class ButtonDx extends JButton{
-	public ButtonDx() {
+	public ButtonDx(ManualSerialCommunication serial) {
 		this.setText("=>");
+		this.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				serial.sendMsgManualDx();	
+			}
+		});
+	}	
+	
+	public void disableButton() {
+		this.setEnabled(false);
 	}
 }

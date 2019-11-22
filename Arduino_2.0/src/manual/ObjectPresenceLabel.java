@@ -1,7 +1,11 @@
 package manual;
 
+import serialCommunication.ManualSerialCommunication;
+
+@SuppressWarnings("serial")
 public class ObjectPresenceLabel extends MyLabel{
-	public ObjectPresenceLabel() {
-		this.setText("Yes");
+	public ObjectPresenceLabel(ManualSerialCommunication serial) {
+		serial.setPresenceLabel(this);
+		this.setText("-");
 	}
 }

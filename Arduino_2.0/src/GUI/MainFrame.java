@@ -5,16 +5,22 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
+import manual.ManualButtonManagment;
+import serialCommunication.AutomaticSerialCommunication;
+import serialCommunication.ManualSerialCommunication;
+import serialCommunication.SingleSerialCommunication;
 import southPanel.SouthPanel;
 
+@SuppressWarnings("serial")
 public class MainFrame extends JFrame{
 	
-	public MainFrame() {
+	public MainFrame(ManualSerialCommunication serial, ManualButtonManagment buttons, 
+			SingleSerialCommunication singleSerial, AutomaticSerialCommunication automaticSerial) {
 		this.setTitle("Arduino 2.0");
 		this.setSize(Settings.getMainFrameWidth(), Settings.getMainFrameHeight());
 		this.setResizable(false);
-		this.add(new TabbedPanel(), BorderLayout.CENTER);
-		//this.add(new SouthPanel(), BorderLayout.SOUTH);
+		this.add(new TabbedPanel(serial, buttons, singleSerial, automaticSerial), BorderLayout.CENTER);
+		this.add(new SouthPanel(), BorderLayout.SOUTH);
 		windowPosition(this);		
 		this.setVisible(true);
 	}
