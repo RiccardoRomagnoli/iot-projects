@@ -2,7 +2,7 @@
 #define __BLINKTASK__
 
 #include "Led.h"
-#include "./states/Task.h"
+#include "states/Task.h"
 
 class BlinkTask: public Task {
   Light* led;
