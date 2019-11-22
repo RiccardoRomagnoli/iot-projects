@@ -8,11 +8,12 @@
 //raccolta dati, invio dati
 //spegnere servo al cambio modalità
 
-AutoTask::AutoTask(Task* blinkTask, Sonar* sonar, ServoMotor* servo, SharedState* shared){
-  this->blinkTask = blinkTask;
+AutoTask::AutoTask(Light* led, Sonar* sonar, ServoMotor* servo, SharedState* shared, GUI* gui){
+  this->led = led;
   this->sonar = sonar;
   this->servo = servo;
   this->shared = shared;
+  this->gui = gui;
 }
   
 void AutoTask::init(int period){
@@ -22,71 +23,82 @@ void AutoTask::init(int period){
 
 void AutoTask::init(){
   state = SCANNING;
-  actualPosition = 0;
+  currentPosition = 0;
   clockwise = true;
   servo->on();
 }
+
+void AutoTask::stop(){
+  servo->off();
+  led->switchOff();
+}
   
 void AutoTask::tick(){
-  Serial.println("Modalita auto attiva");
   switch (state)
   {
-  case SCANNING:
-    this->distance = sonar->sonarScan();
-    if(distance >= D_MIN && distance <= D_MAX){
-      //Object detected
-      state = ALARM;
-      //led on
-    }else if (distance > D_MAX){
-      //Object not detected
-      distance = 0;
-      if(blinkTask->isActive()){
+    case SCANNING:{
+      this->distance = sonar->sonarScan();
+      if(distance >= D_MIN && distance <= D_MAX){
+        //Object detected
+        alarm = true;
+        alarmClockwise = clockwise;
         state = ALARM;
-      }else{
+        //led on
+      }else if (distance > D_MAX){
+        //Object not detected    
+        led->switchOff();
+        distance = 0;
+        if(alarm){
+          state = ALARM;
+        }else{
+          state = IDLE;
+        }
+      }else if (distance < D_MIN){
+        //Alarm With Trackings
+        state = TRACKING;
+      }
+      gui->sendScan(ANGLE * currentPosition + OFFSET, distance);
+      timeElapsed = this->getPeriod();
+      break;
+    }
+    case ALARM:{
+      //If remains last two ticks
+      if(timeElapsed == shared->getTimeOfCicle() - (2 * getPeriod())) {
         state = MOVE;
       }
-    }else if (distance < D_MIN){
-      //Alarm With Trackings
-      state = TRACKING;
-    }
-    timeElapsed = this->getPeriod();
-    break;
-  case ALARM:
-    if(!blinkTask->isActive()){
-      alarmClockwise = clockwise;
-      blinkTask->setActive(true);
-    }
-    state = MOVE;
-    timeElapsed += this->getPeriod();
-    break;
-  case MOVE:
-    if(clockwise)
-      ++actualPosition;
-    else
-      --actualPosition;
-    servo->setPosition(ANGLE * actualPosition + OFFSET);
-    if(actualPosition == -1 || actualPosition == POSITIONS){
-      clockwise = !clockwise;
-      if(blinkTask->isActive() && clockwise == alarmClockwise )
-        blinkTask->setActive(false);
-    }
-    state = SEND;
-    timeElapsed += this->getPeriod();
-    break;
-  case TRACKING:
-    state = SEND;
-    timeElapsed += this->getPeriod();
-    break;
-  case SEND:
-    //msg send serial distance:ANGLE * actualPosition + OFFSET
-    state = IDLE;
-    timeElapsed += this->getPeriod();
-    break;
-  case IDLE:
-    if(timeElapsed < shared->getTimeOfCicle())
+      timeElapsed % 2 == 0 ? led->switchOff() : led->switchOn();
       timeElapsed += this->getPeriod();
-    else
+      break;
+
+    case IDLE:
+      //If remains last two ticks
+      if(timeElapsed == shared->getTimeOfCicle() - (2 * getPeriod())) {
+        state = MOVE;
+      }
+      timeElapsed += this->getPeriod();
+      break;
+    }
+    case MOVE:{
+      led->switchOff();
+      if(clockwise)
+        ++currentPosition;
+      else
+        --currentPosition;
+      servo->setPosition(ANGLE * currentPosition + OFFSET);
+      if(currentPosition == -1 || currentPosition == POSITIONS){
+        clockwise = !clockwise;
+        if(alarm && clockwise == alarmClockwise )
+          alarm = false;
+        shared->updateTimeOfCicle();
+      }
       state = SCANNING;
-    break;
+      break;
+    }
+    case TRACKING:{
+      led->switchOn();
+      state = SCANNING;
+      timeElapsed += this->getPeriod();
+      break;
+    }
   }
 }

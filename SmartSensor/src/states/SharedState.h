@@ -5,7 +5,7 @@ class SharedState {
 
 private:
   int timeOfCicle;
-
+  int tempTimeOfCicle;
 public:
   
   SharedState(int timeOfCicle){
@@ -14,7 +14,11 @@ public:
   
   
   int getTimeOfCicle(){ return this->timeOfCicle; }
-  void setTimeOfCicle(int timeOfCicle){ this->timeOfCicle = timeOfCicle; }
+  
+  //time of a single scan
+  void setTempTimeOfCicle(int tempTimeOfCicle){ this->tempTimeOfCicle = tempTimeOfCicle; }
+
+  void updateTimeOfCicle(){this->timeOfCicle = this->tempTimeOfCicle; }
 
 };
 

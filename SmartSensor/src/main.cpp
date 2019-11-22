@@ -14,11 +14,13 @@
 #include "./macros.h"
 #include "main.h"
 #include "macros.h"
+#include "serial/MsgService.h"
+#include "serial/GUI.h"
 
 Scheduler sched;
 
 void setup() {
-  Serial.begin(9600);
+  MsgService.init();
   sched.init(25);
 
   SharedState* shared = new SharedState(DEFAULT_EXECUTION_TIME/POSITIONS);
@@ -30,29 +32,25 @@ void setup() {
   Button* singleButton = new Button(BUTTON_SINGLE);
   Button* manualButton = new Button(BUTTON_MANUAL);
   Button* autoButton = new Button(BUTTON_AUTO);
+  GUI* gui = new GUI();
+  Potenziometro* pot = new Potenziometro(POT);
 
-  Task* t0 = new BlinkTask(new Led(LED_A));
-  t0->init(50);
-  t0->setActive(false);
-  sched.addTask(t0);
-
-
-  Task* t1 = new SingleTask(t0, pir, sonar, servo, ledD, shared);
+  Task* t1 = new SingleTask(pir, sonar, servo, ledD, shared, gui);
   t1->init(25);
   t1->setActive(false);
   sched.addTask(t1);
 
-  Task* t2 = new ManualTask();
+  Task* t2 = new ManualTask(sonar, servo, gui);
   t2->init(25);
   t2->setActive(true);
   sched.addTask(t2);
 
-  Task* t3 = new AutoTask(t0, sonar, servo, shared);
+  Task* t3 = new AutoTask(ledA, sonar, servo, shared, gui);
   t3->init(25);
   t3->setActive(false);
   sched.addTask(t3);
 
-  Task* t4 = new SetModeTask(t1, t2, t3, singleButton, manualButton, autoButton);
+  Task* t4 = new SetModeTask(t1, t2, t3, singleButton, manualButton, autoButton, pot, gui, shared);
   t4->init(125);
   t4->setActive(true);
   sched.addTask(t4);

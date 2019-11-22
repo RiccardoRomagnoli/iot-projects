@@ -2,13 +2,14 @@
 #define __SINGLETASK__
 
 #include "Task.h"
-#include "./potenz/Potenziometro.h"
-#include "./states/SharedState.h"
-#include "./led/Light.h"
-#include "./pir/Pir.h"
-#include "./servo/servo_motor_impl.h"
-#include "./sonar/Sonar.h"
-#include "./macros.h"
+#include "potenz/Potenziometro.h"
+#include "states/SharedState.h"
+#include "led/Light.h"
+#include "pir/Pir.h"
+#include "servo/servo_motor_impl.h"
+#include "sonar/Sonar.h"
+#include "macros.h"
+#include "serial/GUI.h"
 
 class SingleTask: public Task {
 
@@ -19,16 +20,17 @@ class SingleTask: public Task {
     Sonar* sonar;
     ServoMotor* servo;
     Light* led_d;
-    Task* blinkTask;
     SharedState* shared;
+    GUI* gui;
 
-    int nStateDone;
-    int actualPosition;
+    int timeElapsed;
+    int currentPosition;
     bool directionOrario;
   public:
-    SingleTask(Task* blinkTask, Pir* pir, Sonar* sonar, ServoMotor* servo, Light* led_d, SharedState* shared);
+    SingleTask(Pir* pir, Sonar* sonar, ServoMotor* servo, Light* led_d, SharedState* shared, GUI* gui);
     void init(int period); 
-    void init(); 
+    void init();
+    void stop();
     void tick();
   };
 

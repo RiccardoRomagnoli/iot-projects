@@ -2,13 +2,18 @@
 #include "SetModeTask.h"
 #include "Task.h"
 
-SetModeTask::SetModeTask(Task* singleTask, Task* manualTask, Task* autoTask, Button* singleButtin, Button* manualButton, Button* autoButton){
+SetModeTask::SetModeTask(Task* singleTask, Task* manualTask, Task* autoTask,
+ Button* singleButton, Button* manualButton, Button* autoButton,
+ Potenziometro* pot, GUI* gui, SharedState* sharedState){
   this->singleTask = singleTask;
   this->manualTask = manualTask;
   this->autoTask = autoTask;
-  this->singleButton = singleButtin;
+  this->singleButton = singleButton;
   this->manualButton = manualButton;
   this->autoButton = autoButton;
+  this->pot = pot;
+  this->gui = gui;
+  this->sharedState = sharedState;
 }
   
 void SetModeTask::init(int period){
@@ -17,24 +22,60 @@ void SetModeTask::init(int period){
 }
 
 void SetModeTask::init(){
-  this->currentModeTask = manualTask;
+  state = MANUAL;
+}
+
+void SetModeTask::stop(){
 }
   
 void SetModeTask::tick(){
-  if(singleButton->isPressed() && currentModeTask != singleTask){
-    currentModeTask->setActive(false);
-    currentModeTask = singleTask;
-    currentModeTask->setActive(true);
-    currentModeTask->init();
-  }else if(manualButton->isPressed() && currentModeTask != manualTask){
-    currentModeTask->setActive(false);
-    currentModeTask = manualTask;
-    currentModeTask->setActive(true);
-    currentModeTask->init();
-  }else if(autoButton->isPressed() && currentModeTask != autoTask){
-    currentModeTask->setActive(false);
-    currentModeTask = autoTask;
-    currentModeTask->setActive(true);
-    currentModeTask->init();
+  switch (state){
+    case SINGLE:{
+      if(manualButton->isPressed() || gui->checkManual()){
+        state = MANUAL;
+        singleTask->setActive(false);
+        manualTask->setActive(true);
+      }
+      if(autoButton->isPressed() || gui->checkAuto()){
+        state = AUTO;
+        singleTask->setActive(false);
+        autoTask->setActive(true);
+      }
+      sharedState->setTempTimeOfCicle(map(pot->readPotenziometro(), 0, 1023, 1, 5) * 2);
+      if(gui->getSpeed() != -1)
+        sharedState->setTempTimeOfCicle(gui->getSpeed() / POSITIONS);
+      break;    
+    }
+    
+    case AUTO:{
+      if(manualButton->isPressed() || gui->checkManual()){
+        state = MANUAL;
+        autoTask->setActive(false);
+        manualTask->setActive(true);
+      }
+      if(singleButton->isPressed() || gui->checkSingle()){
+        state = SINGLE;
+        autoTask->setActive(false);
+        singleTask->setActive(true);
+      }
+      sharedState->setTempTimeOfCicle(map(pot->readPotenziometro(), 0, 1023, 1, 5) * 2);
+      if(gui->getSpeed() != -1)
+        sharedState->setTempTimeOfCicle(gui->getSpeed() / POSITIONS);
+      break;    
+    }
+
+    case MANUAL:{
+      if(singleButton->isPressed() || gui->checkSingle()){
+        state = SINGLE;
+        manualTask->setActive(false);
+        singleTask->setActive(true);
+      }
+      if(autoButton->isPressed() || gui->checkAuto()){
+        state = AUTO;
+        manualTask->setActive(false);
+        autoTask->setActive(true);
+      }
+      break;    
+    }
   }
 }

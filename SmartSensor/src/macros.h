@@ -15,5 +15,6 @@
 #define ANGLE 180 / POSITIONS
 #define D_MIN 0.2
 #define D_MAX 0.4
-
+#define MANUAL_DEFAULT_POSITION 90
+#define POT A0
 #endif

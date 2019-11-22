@@ -12,9 +12,9 @@ public:
     timeElapsed = 0;
   }
   
-  virtual void init() {
+  virtual void init() = 0;
 
-  };
+  virtual void stop() = 0;
 
   virtual void tick() = 0;
 
@@ -34,6 +34,7 @@ public:
 
   virtual void setActive(bool active){
     this->active = active;
+    this->active ? init() : stop();
   }
 
   void setPeriod(int myPeriod){

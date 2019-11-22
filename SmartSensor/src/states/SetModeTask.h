@@ -2,24 +2,33 @@
 #define __SETMODETASK__
 
 #include "Task.h"
-#include "./button/Button.h"
-#include "./macros.h"
+#include "button/Button.h"
+#include "serial/GUI.h"
+#include "potenz/Potenziometro.h"
+#include "SharedState.h"
+#include "macros.h"
 
 class SetModeTask: public Task {
+private:
+  Task* singleTask;
+  Task* manualTask;
+  Task* autoTask;
+  SharedState* sharedState;
 
-Task* singleTask;
-Task* manualTask;
-Task* autoTask;
-Task* currentModeTask;
+  Button* singleButton;
+  Button* manualButton;
+  Button* autoButton;
 
-Button* singleButton;
-Button* manualButton;
-Button* autoButton;
-
+  GUI* gui;
+  Potenziometro* pot;
+  enum { MANUAL, SINGLE, AUTO } state;
 public:
-  SetModeTask(Task* singleTask, Task* manualTask, Task* autoTask, Button* singleButtin, Button* manualButton, Button* autoButton);
+  SetModeTask(Task* singleTask, Task* manualTask, Task* autoTask,
+   Button* singleButton, Button* manualButton, Button* autoButton,
+   Potenziometro* pot, GUI* gui, SharedState* sharedState);
   void init(int period);  
   void init();
+  void stop();
   void tick();
 };
 
