@@ -18,7 +18,7 @@
 #include "serial/GUI.h"
 
 Scheduler sched;
-
+Task *t0, *t1, *t2, *t3;
 void setup() {
   MsgService.init();
   sched.init(25);
@@ -35,25 +35,29 @@ void setup() {
   GUI* gui = new GUI();
   Potenziometro* pot = new Potenziometro(POT);
 
-  Task* t1 = new SingleTask(pir, sonar, servo, ledD, shared, gui);
+  t1 = new SingleTask(pir, sonar, servo, ledD, shared, gui);
   t1->init(25);
   t1->setActive(false);
-  sched.addTask(t1);
 
-  Task* t2 = new ManualTask(sonar, servo, gui);
+  t2 = new ManualTask(sonar, servo, gui);
   t2->init(25);
   t2->setActive(true);
-  sched.addTask(t2);
 
-  Task* t3 = new AutoTask(ledA, sonar, servo, shared, gui);
+
+  t3 = new AutoTask(ledA, sonar, servo, shared, gui);
   t3->init(25);
   t3->setActive(false);
+
+
+  t0 = new SetModeTask(t1, t2, t3, singleButton, manualButton, autoButton, pot, gui, shared);
+  t0->init(125);
+  t0->setActive(true);
+
+  sched.addTask(t0);
+  sched.addTask(t1);
+  sched.addTask(t2);
   sched.addTask(t3);
 
-  Task* t4 = new SetModeTask(t1, t2, t3, singleButton, manualButton, autoButton, pot, gui, shared);
-  t4->init(125);
-  t4->setActive(true);
-  sched.addTask(t4);
 }
 
 void loop() {

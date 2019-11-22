@@ -49,10 +49,10 @@ void SingleTask::tick(){
     case SCAN:{
       float ris = sonar->sonarScan();
       if(ris <= D_MAX){
-        gui->sendScan(currentPosition * ANGLE + (ANGLE / 2), ris);
+        gui->sendScan(ANGLE * currentPosition + OFFSET, ris);
         state = DETECTED;
       } else {
-        gui->sendScan(currentPosition * ANGLE + (ANGLE / 2), 0);
+        gui->sendScan(ANGLE * currentPosition + OFFSET, 0);
         state = NOTDETECTED;
       }
       directionOrario ? currentPosition++ : currentPosition--;
@@ -87,7 +87,7 @@ void SingleTask::tick(){
         state = STANDBY;
         shared->updateTimeOfCicle();
       } else {
-        servo->setPosition(ANGLE * currentPosition + (ANGLE / 2));
+        servo->setPosition(ANGLE * currentPosition + OFFSET);
         state = SCAN;
       }
       break;

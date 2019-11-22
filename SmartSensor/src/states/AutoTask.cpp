@@ -1,8 +1,6 @@
 #include "AutoTask.h"
 #include "Arduino.h"
 
-#define OFFSET (ANGLE / 2)
-
 //Gestione allarme
 //scan oraria e anti oraria
 //raccolta dati, invio dati
@@ -80,13 +78,14 @@ void AutoTask::tick(){
     }
     case MOVE:{
       led->switchOff();
+      servo->setPosition(ANGLE * currentPosition + OFFSET);
       if(clockwise)
         ++currentPosition;
       else
         --currentPosition;
-      servo->setPosition(ANGLE * currentPosition + OFFSET);
       if(currentPosition == -1 || currentPosition == POSITIONS){
         clockwise = !clockwise;
+        currentPosition += -(currentPosition % (POSITIONS - 1));
         if(alarm && clockwise == alarmClockwise )
           alarm = false;
         shared->updateTimeOfCicle();

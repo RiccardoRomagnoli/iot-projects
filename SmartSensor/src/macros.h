@@ -17,4 +17,5 @@
 #define D_MAX 0.4
 #define MANUAL_DEFAULT_POSITION 90
 #define POT A0
+#define OFFSET (ANGLE / 2)
 #endif
