@@ -32,9 +32,6 @@ public:
 
   bool isMsgAvailable();
   Msg* receiveMsg();
-
-  bool isMsgAvailable(Pattern& pattern);
-  Msg* receiveMsg(Pattern& pattern);
   
   void sendMsg(const String& msg);
 };
