@@ -18,10 +18,12 @@ SetModeTask::SetModeTask(Task* singleTask, Task* manualTask, Task* autoTask,
   
 void SetModeTask::init(int period){
   Task::init(period);
+  sharedState->setTempTimeOfCicleByPot(pot->readPotenziometro() * 1000 / POSITIONS);
 }
 
 void SetModeTask::init(){
   state = MANUAL;
+
 }
 
 void SetModeTask::stop(){
