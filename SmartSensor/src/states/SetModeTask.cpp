@@ -36,11 +36,13 @@ void SetModeTask::tick(){
         state = MANUAL;
         singleTask->setActive(false);
         manualTask->setActive(true);
+        gui->sendCurrentMode("m");
       }
       if(autoButton->isPressed() || gui->checkAuto()){
         state = AUTO;
         singleTask->setActive(false);
         autoTask->setActive(true);
+        gui->sendCurrentMode("a");
       }
       sharedState->setTempTimeOfCicleByPot(pot->readPotenziometro() * 1000 / POSITIONS);
       if(gui->getSpeed() != -1)
@@ -53,11 +55,13 @@ void SetModeTask::tick(){
         state = MANUAL;
         autoTask->setActive(false);
         manualTask->setActive(true);
+        gui->sendCurrentMode("m");
       }
       if(singleButton->isPressed() || gui->checkSingle()){
         state = SINGLE;
         autoTask->setActive(false);
         singleTask->setActive(true);
+        gui->sendCurrentMode("s");
       }
       sharedState->setTempTimeOfCicleByPot(pot->readPotenziometro() * 1000 / POSITIONS);
       if(gui->getSpeed() != -1)
@@ -70,11 +74,13 @@ void SetModeTask::tick(){
         state = SINGLE;
         manualTask->setActive(false);
         singleTask->setActive(true);
+        gui->sendCurrentMode("s");
       }
       if(autoButton->isPressed() || gui->checkAuto()){
         state = AUTO;
         manualTask->setActive(false);
         autoTask->setActive(true);
+        gui->sendCurrentMode("a");
       }
       break;    
     }

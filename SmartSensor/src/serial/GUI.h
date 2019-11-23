@@ -14,6 +14,7 @@ public:
   int getSpeed();
 
   void sendScan(int angle, float distance);
+  void sendCurrentMode(String mode);
 
 };
 

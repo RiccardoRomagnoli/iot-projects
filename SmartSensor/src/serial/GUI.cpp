@@ -46,6 +46,11 @@ void GUI::sendScan(int angle, float distance){
     MsgService.sendMsg(angle+String(":")+distance);
 };
 
+// Single s, Manual m, Auto a
+void GUI::sendCurrentMode(String mode){
+    MsgService.sendMsg(mode);
+}
+
 // a:VAL
 int GUI::getAngle() {
     Msg* msg = MsgService.receiveMsg();
