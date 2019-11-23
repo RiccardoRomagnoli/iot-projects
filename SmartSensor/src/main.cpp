@@ -11,9 +11,8 @@
 #include "pir/Pir.h"
 #include "servo/servo_motor_impl.h"
 #include "sonar/Sonar.h"
-#include "macros.h"
 #include "main.h"
-#include "macros.h"
+#include "config.h"
 #include "serial/MsgService.h"
 #include "serial/GUI.h"
 
@@ -37,21 +36,18 @@ void setup() {
 
   t1 = new SingleTask(pir, sonar, servo, ledD, shared, gui);
   t1->init(25);
-  t1->setActive(false);
 
   t2 = new ManualTask(sonar, servo, gui);
   t2->init(25);
-  t2->setActive(true);
-
 
   t3 = new AutoTask(ledA, sonar, servo, shared, gui);
   t3->init(25);
-  t3->setActive(false);
-
 
   t0 = new SetModeTask(t1, t2, t3, singleButton, manualButton, autoButton, pot, gui, shared);
-  t0->init(125);
+  t0->init(25);
+
   t0->setActive(true);
+  t2->setActive(true);
 
   sched.addTask(t0);
   sched.addTask(t1);

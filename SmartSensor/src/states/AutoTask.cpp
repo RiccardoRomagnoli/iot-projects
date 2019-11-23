@@ -16,7 +16,6 @@ AutoTask::AutoTask(Light* led, Sonar* sonar, ServoMotor* servo, SharedState* sha
   
 void AutoTask::init(int period){
   Task::init(period);
-  this->init();
 }
 
 void AutoTask::init(){

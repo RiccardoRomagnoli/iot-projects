@@ -6,7 +6,7 @@
 #include "serial/GUI.h"
 #include "potenz/Potenziometro.h"
 #include "SharedState.h"
-#include "macros.h"
+#include "config.h"
 
 class SetModeTask: public Task {
 private:
