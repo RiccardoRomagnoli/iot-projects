@@ -18,7 +18,6 @@ SetModeTask::SetModeTask(Task* singleTask, Task* manualTask, Task* autoTask,
   
 void SetModeTask::init(int period){
   Task::init(period);
-  this->init();
 }
 
 void SetModeTask::init(){

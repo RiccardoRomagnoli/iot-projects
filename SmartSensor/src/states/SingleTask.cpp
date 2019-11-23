@@ -1,6 +1,7 @@
 #include "SingleTask.h"
 #include "Arduino.h"
 #include "avr/sleep.h"
+#include "../lib/EnableInterrupt/EnableInterrupt.h"
 
 void wakeUp(){}
 
@@ -15,8 +16,10 @@ SingleTask::SingleTask(Pir* pir, Sonar* sonar, ServoMotor* servo, Light* led_d, 
 
 void SingleTask::init(int period){
   Task::init(period);
-  attachInterrupt(digitalPinToInterrupt(PIR), wakeUp, RISING);
-  this->init();
+  enableInterrupt(PIR, wakeUp, RISING);
+  enableInterrupt(BUTTON_AUTO, wakeUp, RISING);
+  enableInterrupt(BUTTON_MANUAL, wakeUp, RISING);
+  enableInterrupt(BUTTON_SINGLE, wakeUp, RISING);
 }
 
 void SingleTask::init(){
@@ -33,16 +36,14 @@ void SingleTask::stop(){
 void SingleTask::tick(){
 
   switch (state) {
+
     case STANDBY:{
       set_sleep_mode(SLEEP_MODE_PWR_DOWN);  
       sleep_enable();
       sleep_mode();  
 
-      bool det = true; // pir attivato
-      if (det) {
-        state = SCAN;
-        servo->on();        
-      }
+      state = SCAN;
+      servo->on();        
       break;
     }
 

@@ -4,7 +4,7 @@
 class Task {
   int myPeriod;
   int timeElapsed;
-  bool active;
+  bool active = false;
     
 public:
   virtual void init(int period){
