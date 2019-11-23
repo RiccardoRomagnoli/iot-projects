@@ -80,7 +80,6 @@ public class SerialCommunication {
 		if(mode.contentEquals(Settings.getAutoMode())) {
 			tab = 2;
 		}
-		System.out.println("modalità cambiata a: " + mode);
 		this.currentMode = mode;
 		TabbedPanel panel = frame.getTabbedPane();
 		panel.setSelectedIndex(tab);

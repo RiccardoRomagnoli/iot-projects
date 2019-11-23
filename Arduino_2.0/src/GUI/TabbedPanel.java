@@ -29,9 +29,6 @@ public class TabbedPanel extends JTabbedPane{
 	        public void stateChanged(ChangeEvent e) {
 	            try {
 					singleSerial.singleSendMsg("m:" + frame.getSelectedTab());
-					/*if(frame.getSelectedTab() == Settings.getManualMode()) {
-						singleSerial.singleSendMsg("a:" + Integer.toString(Settings.getInitialManualAngle()));
-					}*/
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
