@@ -14,15 +14,19 @@ import southPanel.SouthPanel;
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame{
 	
+	TabbedPanel tabbedPanel;
+	
 	public MainFrame(ManualSerialCommunication serial, ManualButtonManagment buttons, 
 			SingleSerialCommunication singleSerial, AutomaticSerialCommunication automaticSerial) {
+		tabbedPanel = new TabbedPanel(serial, buttons, singleSerial, automaticSerial, this);
 		this.setTitle("Arduino 2.0");
 		this.setSize(Settings.getMainFrameWidth(), Settings.getMainFrameHeight());
 		this.setResizable(false);
-		this.add(new TabbedPanel(serial, buttons, singleSerial, automaticSerial), BorderLayout.CENTER);
+		this.add(tabbedPanel, BorderLayout.CENTER);
 		this.add(new SouthPanel(), BorderLayout.SOUTH);
 		windowPosition(this);		
 		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	static void windowPosition(JFrame main) {
@@ -36,5 +40,9 @@ public class MainFrame extends JFrame{
 
         
         main.setLocation(x, y);
+	}
+	
+	public String getSelectedTab() {
+		return tabbedPanel.getSelectedComponent().getName();
 	}
 }
