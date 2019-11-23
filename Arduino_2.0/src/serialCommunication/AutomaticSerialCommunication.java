@@ -52,6 +52,16 @@ public class AutomaticSerialCommunication {
 	}
 	
 	public void receiveMsg(double distance, int angle) {
-		
+		distanceLabel.setText(Double.toString(distance));
+		distanceLabel.repaint();
+		if(distance != 0) {
+			allarmLabel.setText("Yes");
+		}
+		else {
+			allarmLabel.setText("No");
+		}
+		allarmLabel.repaint();
+		positionLabel.setText(Integer.toString(angle) + "°");
+		positionLabel.repaint();
 	}
 }

@@ -7,9 +7,8 @@ public class ReadMessagesFromSerial extends Thread{
 	}
 	
 	public void run(CommChannel channel, SerialCommunication communication) throws Exception {
-		
 		while(true) {
-			Thread.sleep(150);
+			Thread.sleep(300);
 			if(channel.isMsgAvailable()) {
 				communication.messageArrived(channel.receiveMsg());
 			}

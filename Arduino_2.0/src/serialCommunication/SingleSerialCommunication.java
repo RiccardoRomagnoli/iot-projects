@@ -61,6 +61,16 @@ public class SingleSerialCommunication {
 	}
 	
 	public void receiveMsg(double distance, int angle) {
-		
+		distanceLabel.setText(Double.toString(distance));
+		distanceLabel.repaint();
+		if(distance != 0) {
+			objectPresenceLabel.setText("Yes");
+		}
+		else {
+			objectPresenceLabel.setText("No");
+		}
+		objectPresenceLabel.repaint();
+		positionLabel.setText(Integer.toString(angle) + "°");
+		positionLabel.repaint();
 	}
 }

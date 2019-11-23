@@ -50,4 +50,8 @@ public class MainFrame extends JFrame{
 		serial.changeMode(tabbedPanel.getSelectedComponent().getName());
 		return tabbedPanel.getSelectedComponent().getName();
 	}
+	
+	public TabbedPanel getTabbedPane() {
+		return tabbedPanel;
+	}
 }
