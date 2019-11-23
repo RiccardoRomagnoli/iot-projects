@@ -8,6 +8,6 @@ public class RotationGradeLabel extends MyLabel{
 	
 	public RotationGradeLabel(ManualSerialCommunication serial) {
 		serial.setRotationGradeLabel(this);
-		this.setText(Settings.getInitialManualAngle());
+		this.setText(Integer.toString(Settings.getInitialManualAngle()) + "°");
 	}
 }

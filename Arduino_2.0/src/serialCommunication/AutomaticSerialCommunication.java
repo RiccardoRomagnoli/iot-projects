@@ -10,13 +10,14 @@ public class AutomaticSerialCommunication {
 	private AutomaticRadarPositionLabel positionLabel;
 	private AutomaticDistanceLabel distanceLabel;
 	private AllarmLabel allarmLabel;
+	SerialCommunication serial;
+	
+	public AutomaticSerialCommunication(SerialCommunication serial) {
+		this.serial = serial;
+	}
 
-	public String sendMsgSpeedChange() {
-		System.out.print(slider.getValue());
-		this.changeAllarmLabel("YES");
-		this.changeDistanceLabel("2 metri");
-		this.changePositionLabel("4°");
-		return Integer.toString(slider.getValue());
+	public void sendMsgSpeedChange() throws Exception {
+		serial.sendMsg("s:" + Integer.toString(slider.getValue()));
 	}	
 	
 	public void setSlider(AutomaticSlider slider) {

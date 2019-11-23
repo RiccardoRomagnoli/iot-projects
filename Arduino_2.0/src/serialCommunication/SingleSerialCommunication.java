@@ -11,16 +11,14 @@ public class SingleSerialCommunication {
 	private SingleObjectPresenceLabel objectPresenceLabel;
 	private SingleDistanceLabel distanceLabel;
 	private RadarPositionLabel positionLabel;
+	SerialCommunication serial;
 	
+	public SingleSerialCommunication (SerialCommunication serial) {
+		this.serial = serial;
+	}
 	
-	
-	public String sendMsgSpeedChange() {
-		String x = Integer.toString(speedSlider.getValue());
-		System.out.println("SpeedChanged. New speed is: " + x);
-		this.changeDistanceLabel("2 metri");
-		this.changePresenceLabel("Yes");
-		this.changePositionLabel("23°");
-		return Integer.toString(speedSlider.getValue());
+	public void sendMsgSpeedChange() throws Exception {
+		serial.sendMsg("s:" + Integer.toString(speedSlider.getValue()));
 	}
 	
 	public void changePresenceLabel(String presence) {
@@ -52,5 +50,13 @@ public class SingleSerialCommunication {
 
 	public void setPositionLabel(RadarPositionLabel positionLabel) {
 		this.positionLabel = positionLabel;
+	}
+	
+	public void singleSendMsg(String msg) throws Exception {
+		serial.sendMsg(msg);
+	}
+	
+	public void changeMode(String mode) {
+		serial.changeMode(mode);
 	}
 }

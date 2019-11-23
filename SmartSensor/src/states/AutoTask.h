@@ -5,7 +5,7 @@
 #include "states/SharedState.h"
 #include "servo/servo_motor_impl.h"
 #include "sonar/Sonar.h"
-#include "macros.h"
+#include "config.h"
 #include "led/Light.h"
 #include "serial/GUI.h"
 
