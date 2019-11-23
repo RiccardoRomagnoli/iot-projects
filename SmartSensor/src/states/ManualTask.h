@@ -5,7 +5,7 @@
 #include "servo/servo_motor_impl.h"
 #include "sonar/Sonar.h"
 #include "serial/GUI.h"
-#include "macros.h"
+#include "config.h"
 
 class ManualTask: public Task {
 

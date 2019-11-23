@@ -8,7 +8,7 @@
 #include "pir/Pir.h"
 #include "servo/servo_motor_impl.h"
 #include "sonar/Sonar.h"
-#include "macros.h"
+#include "config.h"
 #include "serial/GUI.h"
 
 class SingleTask: public Task {

@@ -1,5 +1,5 @@
-#ifndef __MACROS__
-#define __MACROS__
+#ifndef __CONFIG__
+#define __CONFIG__
  
 #define BUTTON_SINGLE 3
 #define BUTTON_MANUAL 4
@@ -18,4 +18,5 @@
 #define MANUAL_DEFAULT_POSITION 90
 #define POT A0
 #define OFFSET (ANGLE / 2)
+
 #endif
