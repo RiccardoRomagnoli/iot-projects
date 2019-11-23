@@ -17,7 +17,11 @@ public class ButtonSx extends JButton{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				serial.sendMsgManualSx();
+				try {
+					serial.sendMsgManualSx();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 	}

@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 
+import GUI.Settings;
 import serialCommunication.ManualSerialCommunication;
 
 @SuppressWarnings("serial")
@@ -13,7 +14,7 @@ public class ManualPanel extends JPanel{
 	ManualButtonManagment buttons;
 	
 	public ManualPanel(ManualButtonManagment buttons, ManualSerialCommunication serial) {
-		
+		this.setName(Settings.getManualMode());
 		this.buttons = buttons;
 		
 		this.setLayout(new GridBagLayout());

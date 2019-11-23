@@ -13,8 +13,7 @@ public class MySlider extends JSlider{
 		serial.setSpeedSlider(this);
 		
 		this.setOrientation(JSlider.VERTICAL);
-		int value = (Settings.getRefreshTimeMax() - Settings.getRefreshTimeMin())/2;
-		this.setValue(value);
+		this.setValue(2);
 		this.setMinimum(Settings.getRefreshTimeMin());
 		this.setMaximum(Settings.getRefreshTimeMax());
 		this.setMajorTickSpacing(Settings.getSpeedTickSpacing());
@@ -25,7 +24,11 @@ public class MySlider extends JSlider{
 		      public void stateChanged(ChangeEvent e) {
 		    	  JSlider source = (JSlider)e.getSource();
 		          if (!source.getValueIsAdjusting()) {
-		              serial.sendMsgSpeedChange();
+		              try {
+						serial.sendMsgSpeedChange();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 		          }
 		      }
 		    });

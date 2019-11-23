@@ -13,9 +13,15 @@ public class ManualButtonManagment {
 		buttonOnSx = new ButtonSx(serial);
 	}
 	
-	public void disableButton() {
-		buttonOnDx.disableButton();
-		buttonOnSx.disableButton();
+	public void disableButton(boolean disable) {
+		if(disable) {
+			buttonOnDx.disableButton();
+			buttonOnSx.disableButton();
+		}
+		if(!disable) {
+			buttonOnDx.setEnabled(true);
+			buttonOnSx.setEnabled(true);
+		}
 	}
 	
 	public ButtonDx getButtonDx() {

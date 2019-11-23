@@ -11,7 +11,15 @@ public class Settings {
 	
 	private static final int SPEED_TICK_SPACING = 2;
 	
-	private static final String INITIAL_MANUAL_ANGLE = "90°";
+	private static final int INITIAL_MANUAL_ANGLE = 90;
+	
+	private static final int MANUAL_ANGLE_DELTA = 10;
+	
+	private static final String MANUAL_MODE = "m";
+	
+	private static final String SINGLE_MODE = "s";
+	 
+	private static final String AUTO_MODE = "a";
 
 	/**
 	 * @return the mainFrameWidth
@@ -45,8 +53,24 @@ public class Settings {
 		return SPEED_TICK_SPACING;
 	}
 
-	public static String getInitialManualAngle() {
+	public static int getInitialManualAngle() {
 		return INITIAL_MANUAL_ANGLE;
+	}
+
+	public static String getManualMode() {
+		return MANUAL_MODE;
+	}
+
+	public static String getSingleMode() {
+		return SINGLE_MODE;
+	}
+
+	public static String getAutoMode() {
+		return AUTO_MODE;
+	}
+
+	public static int getManualAngleDelta() {
+		return MANUAL_ANGLE_DELTA;
 	}
 	
 }
