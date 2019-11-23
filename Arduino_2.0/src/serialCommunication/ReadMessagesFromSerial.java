@@ -13,4 +13,12 @@ public class ReadMessagesFromSerial extends Thread{
 			}
 		}
 	}
+	
+	public void start(CommChannel channel, SerialCommunication communication) throws Exception {
+		while(true) {
+			if(channel.isMsgAvailable()) {
+				communication.messageArrived(channel.receiveMsg());
+			}
+		}
+	}
 }

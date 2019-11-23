@@ -41,7 +41,7 @@ public class SerialCommunication {
 	
 	public void inputOutput() throws Exception {
 		Thread.sleep(100);
-		reader.run(channel, this);
+		reader.start(channel, this);
 	}
 	
 	public void sendMsg(String msg) throws Exception {
