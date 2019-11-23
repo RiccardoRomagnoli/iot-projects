@@ -54,6 +54,9 @@ public class SerialCommunication {
 		if(firstMessage) {
 			firstMessage = false;
 		}
+		else if(message.equals("ricevuto")) {
+			//
+		} 
 		else if(stringhe[0].equals("m")) {
 			changeMode(stringhe[stringhe.length - 1]);
 		}
