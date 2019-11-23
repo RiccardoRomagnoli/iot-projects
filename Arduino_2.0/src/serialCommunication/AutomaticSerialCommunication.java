@@ -50,4 +50,8 @@ public class AutomaticSerialCommunication {
 	public void setAllarmLabel(AllarmLabel allarmLabel) {
 		this.allarmLabel = allarmLabel;
 	}
+	
+	public void receiveMsg(double distance, int angle) {
+		
+	}
 }

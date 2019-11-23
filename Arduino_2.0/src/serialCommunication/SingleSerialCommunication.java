@@ -59,4 +59,8 @@ public class SingleSerialCommunication {
 	public void changeMode(String mode) {
 		serial.changeMode(mode);
 	}
+	
+	public void receiveMsg(double distance, int angle) {
+		
+	}
 }

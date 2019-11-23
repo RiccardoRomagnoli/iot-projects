@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import manual.ManualButtonManagment;
 import serialCommunication.AutomaticSerialCommunication;
 import serialCommunication.ManualSerialCommunication;
+import serialCommunication.SerialCommunication;
 import serialCommunication.SingleSerialCommunication;
 import southPanel.SouthPanel;
 
@@ -15,10 +16,12 @@ import southPanel.SouthPanel;
 public class MainFrame extends JFrame{
 	
 	TabbedPanel tabbedPanel;
+	SerialCommunication serial;
 	
-	public MainFrame(ManualSerialCommunication serial, ManualButtonManagment buttons, 
-			SingleSerialCommunication singleSerial, AutomaticSerialCommunication automaticSerial) {
-		tabbedPanel = new TabbedPanel(serial, buttons, singleSerial, automaticSerial, this);
+	public MainFrame(ManualSerialCommunication manualSerial, ManualButtonManagment buttons, 
+			SingleSerialCommunication singleSerial, AutomaticSerialCommunication automaticSerial,
+			SerialCommunication serial) {
+		tabbedPanel = new TabbedPanel(manualSerial, buttons, singleSerial, automaticSerial, this);
 		this.setTitle("Arduino 2.0");
 		this.setSize(Settings.getMainFrameWidth(), Settings.getMainFrameHeight());
 		this.setResizable(false);
@@ -27,6 +30,7 @@ public class MainFrame extends JFrame{
 		windowPosition(this);		
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.serial = serial;
 	}
 	
 	static void windowPosition(JFrame main) {
@@ -43,6 +47,7 @@ public class MainFrame extends JFrame{
 	}
 	
 	public String getSelectedTab() {
+		serial.changeMode(tabbedPanel.getSelectedComponent().getName());
 		return tabbedPanel.getSelectedComponent().getName();
 	}
 }

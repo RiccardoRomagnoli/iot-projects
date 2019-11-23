@@ -72,4 +72,16 @@ public class ManualSerialCommunication {
 	public void setPresenceLabel(ObjectPresenceLabel presenceLabel) {
 		this.presenceLabel = presenceLabel;
 	}	
+	
+	public void receiveMsg(double distance, int angle) {
+		distanceLabel.setText(Double.toString(distance));
+		distanceLabel.repaint();
+		if(distance != 0) {
+			presenceLabel.setText("Yes");
+		}
+		else {
+			presenceLabel.setText("No");
+		}
+		presenceLabel.repaint();
+	}
 }

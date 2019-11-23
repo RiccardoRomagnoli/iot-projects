@@ -7,7 +7,7 @@ import manual.ManualButtonManagment;
 
 public class SerialCommunication {
 	
-	ManualSerialCommunication serial;
+	ManualSerialCommunication manualSerial;
 	ManualButtonManagment buttons;
 	SingleSerialCommunication singleSerial;
 	AutomaticSerialCommunication automaticSerial;
@@ -17,8 +17,8 @@ public class SerialCommunication {
 	
 	public SerialCommunication() throws Exception {
 		mode = Settings.getManualMode();
-		serial = new ManualSerialCommunication(this);
-		buttons = serial.getButtonManager();
+		manualSerial = new ManualSerialCommunication(this);
+		buttons = manualSerial.getButtonManager();
 		singleSerial = new SingleSerialCommunication(this);
 		automaticSerial = new AutomaticSerialCommunication(this);
 		String[] portNames = SerialPortList.getPortNames();
@@ -26,16 +26,17 @@ public class SerialCommunication {
 	}
 	
 	public void start() throws Exception {
-		new MainFrame(serial, buttons, singleSerial, automaticSerial);
-		serial.getButtons().disableButton(true);
+		new MainFrame(manualSerial, buttons, singleSerial, automaticSerial, this);
+		manualSerial.getButtons().disableButton(true);
 		System.out.println("Waiting Arduino for rebooting...");		
 		Thread.sleep(4000);
 		System.out.println("Ready.");
 		singleSerial.singleSendMsg("a:" + Integer.toString(Settings.getInitialManualAngle()));
-		serial.getButtons().disableButton(false);
+		manualSerial.getButtons().disableButton(false);
 	}
 	
 	public void inputOutput() throws Exception {
+		Thread.sleep(100);
 		reader = new ReadMessagesFromSerial();
 		reader.run(channel, this);
 	}
@@ -45,7 +46,18 @@ public class SerialCommunication {
 	}
 	
 	public void messageArrived(String message) {
-		System.out.println(message);
+		String[] stringhe = message.split(":");
+		int angle = Integer.parseInt(stringhe[0]);
+		double distance = Double.parseDouble(stringhe[1]);
+		if(mode == Settings.getManualMode()) {
+			manualSerial.receiveMsg(distance, angle);
+		}
+		if(mode == Settings.getSingleMode()) {
+			singleSerial.receiveMsg(distance, angle);
+		}
+		if(mode == Settings.getAutoMode()) {
+			automaticSerial.receiveMsg(distance, angle);
+		}	
 	}
 	
 	public void changeMode(String mode) {
