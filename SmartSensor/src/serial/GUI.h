@@ -1,6 +1,8 @@
 #ifndef __GUI__
 #define __GUI__
 
+#include "Arduino.h"
+
 class GUI {
 
 public:
