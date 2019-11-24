@@ -109,10 +109,18 @@ public class SerialCommunication {
 				if(currentMode.equals(Settings.getManualMode())) {
 					manualSerial.receiveMsg(distance, angle);
 					counter++;
+					if(counter == 1) {
+						repaintChart();
+						counter = 0;
+					}
 				}
 				if(currentMode.equals(Settings.getSingleMode())) {
 					singleSerial.receiveMsg(distance, angle);
 					counter++;
+					if(counter == 22) {
+						repaintChart();
+						counter = 0;
+					}
 				}
 				if(currentMode.equals(Settings.getAutoMode())) {
 					automaticSerial.receiveMsg(distance, angle);
@@ -131,6 +139,7 @@ public class SerialCommunication {
 	
 	public void changeMode(String mode) throws Exception {
 		int tab = 0;
+		counter = 0;
 		if(mode.contentEquals(Settings.getSingleMode())) {
 			tab = 1;
 		}
