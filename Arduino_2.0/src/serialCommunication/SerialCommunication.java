@@ -183,24 +183,24 @@ public class SerialCommunication {
 			chart.add(buff);
 		}
 		else {
-			for(int y = 0; y < chart.size(); y++) {
-				if(chart.get(y).getAngle() == angle) {
-					chart.set(y, buff);
+			for(int y = 1; y < chart.size()+1; y++) {
+				if(chart.get(y-1).getAngle() == angle) {
+					chart.set(y-1, buff);
 				}
-				else if(chart.get(y).getAngle() > angle) {
-					buff2 = chart.get(y);
-					chart.set(y, buff);
-					for(int x = y; x < chart.size(); x++) {
-						buff = chart.get(x+1);
-						chart.set(x + 1, buff2);
+				else if(chart.get(y-1).getAngle() > angle) {
+					buff2 = chart.get(y-1);
+					chart.set(y-1, buff);
+					for(int x = y-1; x < chart.size()+1; x++) {
+						buff = chart.get(x);
+						chart.set(x, buff2);
 						buff2 = buff;
 					}
 				}
-				if(!(chart.contains(buff))) {
-					chart.add(chart.size(), buff3);
-				}
-				refreshChart(distance, angle);
 			}
+			if(!(chart.contains(buff))) {
+				chart.add(chart.size(), buff3);
+			}
+			refreshChart(distance, angle);
 		}
 	}
 	
