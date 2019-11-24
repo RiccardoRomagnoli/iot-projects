@@ -15,7 +15,6 @@ public class SerialCommunication {
 	CommChannel channel;
 	ReadMessagesFromSerial reader;
 	String currentMode;
-	boolean firstMessage = true;
 	MainFrame frame;
 	
 	public SerialCommunication() throws Exception {
@@ -50,15 +49,21 @@ public class SerialCommunication {
 	
 	public void messageArrived(String message) {
 		System.out.println(message);
-		String[] stringhe = message.split(":");
+		/*String[] stringhe = message.split(":");
 		if(firstMessage) {
 			firstMessage = false;
 		}
 		else if(message.equals("ricevuto")) {
 			//
 		} 
-		else if(stringhe[0].equals("m")) {
-			changeMode(stringhe[stringhe.length - 1]);
+		else if(message.equals(Settings.getManualMode())) {
+			changeMode(Settings.getManualMode());
+		}
+		else if(message.equals(Settings.getSingleMode())) {
+			changeMode(Settings.getManualMode());
+		}
+		else if(message.equals(Settings.getAutoMode())) {
+			changeMode(Settings.getAutoMode());
 		}
 		else {
 			int angle = Integer.parseInt(stringhe[0]);
@@ -72,7 +77,32 @@ public class SerialCommunication {
 			if(currentMode.equals(Settings.getAutoMode())) {
 				automaticSerial.receiveMsg(distance, angle);
 			}
-		}	
+		}	*/
+		if(message.equals(Settings.getManualMode())) {
+			changeMode(Settings.getManualMode());
+		}
+		else if(message.equals(Settings.getSingleMode())) {
+			changeMode(Settings.getManualMode());
+		}
+		else if(message.equals(Settings.getAutoMode())) {
+			changeMode(Settings.getAutoMode());
+		}
+		else {
+			String[] stringhe = message.split(":");
+			if(stringhe.length == 2 && !(stringhe[0].contains(" ")) && !(stringhe[1].contains(" "))) {
+				int angle = Integer.parseInt(stringhe[0]);
+				double distance = Double.parseDouble(stringhe[1]);
+				if(currentMode.equals(Settings.getManualMode())) {
+					manualSerial.receiveMsg(distance, angle);
+				}
+				if(currentMode.equals(Settings.getSingleMode())) {
+					singleSerial.receiveMsg(distance, angle);
+				}
+				if(currentMode.equals(Settings.getAutoMode())) {
+					automaticSerial.receiveMsg(distance, angle);
+				}
+			}
+		}
 	}
 	
 	public void changeMode(String mode) {
@@ -86,5 +116,5 @@ public class SerialCommunication {
 		this.currentMode = mode;
 		TabbedPanel panel = frame.getTabbedPane();
 		panel.setSelectedIndex(tab);
-	}
+	}	
 }
