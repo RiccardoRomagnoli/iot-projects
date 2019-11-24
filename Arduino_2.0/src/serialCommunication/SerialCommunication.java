@@ -175,33 +175,31 @@ public class SerialCommunication {
 			}
 			refreshChart(distance, angle);
 		}*/
+		ChartData newData = new ChartData(angle, distance);
 		ChartData buff = new ChartData(angle, distance);
 		ChartData buff2 = new ChartData(angle, distance);
-		ChartData buff3 = new ChartData(angle, distance);
-		
 		if(chart.size() == 0) {
-			chart.add(buff);
+			chart.add(newData);
 		}
 		else {
-			for(int y = 1; y < chart.size()+1; y++) {
+			for(int y = 1; y < chart.size(); y++) {
+				buff = chart.get(y-1);
+				buff2 = chart.get(y);
 				if(chart.get(y-1).getAngle() == angle) {
-					chart.set(y-1, buff);
+					chart.set(y-1, newData);
 				}
 				else if(chart.get(y-1).getAngle() > angle) {
-					buff2 = chart.get(y-1);
-					chart.set(y-1, buff);
-					for(int x = y-1; x < chart.size()+1; x++) {
-						buff = chart.get(x);
-						chart.set(x, buff2);
-						buff2 = buff;
+					for(int x = y; x < chart.size(); x++ ) {
+						buff = chart.get(y -1);
+						buff2 = chart.get(y);
+						chart.set(y, buff);
 					}
+					chart.set(y-1, newData);
 				}
+				
 			}
-			if(!(chart.contains(buff))) {
-				chart.add(chart.size(), buff3);
-			}
-			refreshChart(distance, angle);
 		}
+		
 	}
 	
 	private void clearData() {
