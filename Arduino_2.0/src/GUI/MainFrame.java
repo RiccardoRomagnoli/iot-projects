@@ -10,6 +10,7 @@ import serialCommunication.AutomaticSerialCommunication;
 import serialCommunication.ManualSerialCommunication;
 import serialCommunication.SerialCommunication;
 import serialCommunication.SingleSerialCommunication;
+import southPanel.MyBarChart;
 import southPanel.SouthPanel;
 
 @SuppressWarnings("serial")
@@ -20,13 +21,13 @@ public class MainFrame extends JFrame{
 	
 	public MainFrame(ManualSerialCommunication manualSerial, ManualButtonManagment buttons, 
 			SingleSerialCommunication singleSerial, AutomaticSerialCommunication automaticSerial,
-			SerialCommunication serial) {
+			SerialCommunication serial, MyBarChart barChart) {
 		tabbedPanel = new TabbedPanel(manualSerial, buttons, singleSerial, automaticSerial, this);
 		this.setTitle("Arduino 2.0");
 		this.setSize(Settings.getMainFrameWidth(), Settings.getMainFrameHeight());
 		this.setResizable(false);
 		this.add(tabbedPanel, BorderLayout.CENTER);
-		this.add(new SouthPanel(), BorderLayout.SOUTH);
+		this.add(new SouthPanel(barChart), BorderLayout.SOUTH);
 		windowPosition(this);		
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

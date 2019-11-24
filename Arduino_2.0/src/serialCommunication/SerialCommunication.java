@@ -1,10 +1,15 @@
 package serialCommunication;
 
+import java.util.ArrayList;
+
 import GUI.MainFrame;
+import GUI.RefreshChartThread;
 import GUI.Settings;
 import GUI.TabbedPanel;
 import jssc.SerialPortList;
 import manual.ManualButtonManagment;
+import southPanel.ChartData;
+import southPanel.MyBarChart;
 
 public class SerialCommunication {
 	
@@ -16,6 +21,10 @@ public class SerialCommunication {
 	ReadMessagesFromSerial reader;
 	String currentMode;
 	MainFrame frame;
+	ArrayList<ChartData> chart;
+	MyBarChart barChart;
+	RefreshChartThread refreshChart;
+	int counter;
 	
 	public SerialCommunication() throws Exception {
 		currentMode = Settings.getManualMode();
@@ -26,10 +35,14 @@ public class SerialCommunication {
 		String[] portNames = SerialPortList.getPortNames();
 		channel = new SerialCommChannel(portNames[portNames.length - 1],9600);
 		reader = new ReadMessagesFromSerial();
+		chart = new ArrayList<ChartData>();
+		barChart = new MyBarChart();
+		refreshChart = new RefreshChartThread();
+		counter = 0;
 	}
 	
 	public void start() throws Exception {
-		frame = new MainFrame(manualSerial, buttons, singleSerial, automaticSerial, this);
+		frame = new MainFrame(manualSerial, buttons, singleSerial, automaticSerial, this, barChart);
 		manualSerial.getButtons().disableButton(true);
 		System.out.println("Waiting Arduino for rebooting...");		
 		Thread.sleep(4000);
@@ -40,6 +53,7 @@ public class SerialCommunication {
 	
 	public void inputOutput() throws Exception {
 		Thread.sleep(100);
+		//refreshChart.start(this);
 		reader.start(channel, this);
 	}
 	
@@ -94,15 +108,25 @@ public class SerialCommunication {
 				double distance = Double.parseDouble(stringhe[1]);
 				if(currentMode.equals(Settings.getManualMode())) {
 					manualSerial.receiveMsg(distance, angle);
+					counter++;
 				}
 				if(currentMode.equals(Settings.getSingleMode())) {
 					singleSerial.receiveMsg(distance, angle);
+					counter++;
 				}
 				if(currentMode.equals(Settings.getAutoMode())) {
 					automaticSerial.receiveMsg(distance, angle);
+					counter++;
+					if(counter == 22) {
+						repaintChart();
+						counter = 0;
+					}
 				}
+				addData(distance, angle);
 			}
 		}
+		
+		
 	}
 	
 	public void changeMode(String mode) {
@@ -116,5 +140,49 @@ public class SerialCommunication {
 		this.currentMode = mode;
 		TabbedPanel panel = frame.getTabbedPane();
 		panel.setSelectedIndex(tab);
+		clearData();
 	}	
+	
+	private void addData(double distance, int angle) {
+		ChartData buff = new ChartData(angle, distance);
+		if(chart.size() == 0) {
+			chart.add(buff);
+		}
+		else {
+			for(int y = 0; y < chart.size(); y++) {
+				if(chart.get(y).getAngle() == angle) {
+					chart.set(y, buff);
+				}
+				else if(chart.get(y).getAngle() > angle) {
+					chart.set(y, buff);
+					
+					break;
+				}
+			}
+			if(!(chart.contains(buff))) {
+				chart.add(buff);
+			}
+			refreshChart(distance, angle);
+		}
+		for(int y = 0; y < chart.size(); y++) {
+			System.out.println("angolo: " + chart.get(y).getAngle() + " distanza: " + chart.get(y).getDistance());
+		}
+	}
+	
+	private void clearData() {
+		chart = new ArrayList<ChartData>();
+		barChart.clearDataSet();
+		repaintChart();
+	}
+	
+	public void refreshChart(double distance, int angle) {
+		//barChart.clearDataSet();
+		for(int y = 0; y <= chart.size(); y++) {
+			barChart.addDataToDataSet(distance, Integer.toString(angle) + "°");
+		}
+	}
+	
+	public void repaintChart() {
+		barChart.getPanel().repaintChart();
+	}
 }
