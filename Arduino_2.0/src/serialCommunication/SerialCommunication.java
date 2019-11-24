@@ -146,9 +146,9 @@ public class SerialCommunication {
 		if(mode.contentEquals(Settings.getAutoMode())) {
 			tab = 2;
 		}
-		/*if(tab == 0) {
+		if(tab == 0) {
 			this.sendMsg("a:" + manualSerial.returnRotation());
-		}*/
+		}
 		this.currentMode = mode;
 		TabbedPanel panel = frame.getTabbedPane();
 		panel.setSelectedIndex(tab);
@@ -156,7 +156,7 @@ public class SerialCommunication {
 	}	
 	
 	private void addData(double distance, int angle) {
-		ChartData buff = new ChartData(angle, distance);
+		/*ChartData buff = new ChartData(angle, distance);
 		if(chart.size() == 0) {
 			chart.add(buff);
 		}
@@ -167,7 +167,6 @@ public class SerialCommunication {
 				}
 				else if(chart.get(y).getAngle() > angle) {
 					chart.set(y, buff);
-					
 					break;
 				}
 			}
@@ -175,9 +174,33 @@ public class SerialCommunication {
 				chart.add(buff);
 			}
 			refreshChart(distance, angle);
+		}*/
+		ChartData buff = new ChartData(angle, distance);
+		ChartData buff2 = new ChartData(angle, distance);
+		ChartData buff3 = new ChartData(angle, distance);
+		
+		if(chart.size() == 0) {
+			chart.add(buff);
 		}
-		for(int y = 0; y < chart.size(); y++) {
-			System.out.println("angolo: " + chart.get(y).getAngle() + " distanza: " + chart.get(y).getDistance());
+		else {
+			for(int y = 0; y < chart.size(); y++) {
+				if(chart.get(y).getAngle() == angle) {
+					chart.set(y, buff);
+				}
+				else if(chart.get(y).getAngle() > angle) {
+					buff2 = chart.get(y);
+					chart.set(y, buff);
+					for(int x = y; x < chart.size(); x++) {
+						buff = chart.get(x+1);
+						chart.set(x + 1, buff2);
+						buff2 = buff;
+					}
+				}
+				if(!(chart.contains(buff))) {
+					chart.add(chart.size(), buff3);
+				}
+				refreshChart(distance, angle);
+			}
 		}
 	}
 	
@@ -188,7 +211,6 @@ public class SerialCommunication {
 	}
 	
 	public void refreshChart(double distance, int angle) {
-		//barChart.clearDataSet();
 		for(int y = 0; y <= chart.size(); y++) {
 			barChart.addDataToDataSet(distance, Integer.toString(angle) + "°");
 		}
