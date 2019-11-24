@@ -78,13 +78,13 @@ public class SerialCommunication {
 				automaticSerial.receiveMsg(distance, angle);
 			}
 		}	*/
-		if(message.equals(Settings.getManualMode())) {
+		if(message.equals("arduino:m:" + Settings.getManualMode())) {
 			changeMode(Settings.getManualMode());
 		}
-		else if(message.equals(Settings.getSingleMode())) {
+		else if(message.equals("arduino:m:" + Settings.getSingleMode())) {
 			changeMode(Settings.getManualMode());
 		}
-		else if(message.equals(Settings.getAutoMode())) {
+		else if(message.equals("arduino:m:" + Settings.getAutoMode())) {
 			changeMode(Settings.getAutoMode());
 		}
 		else {
