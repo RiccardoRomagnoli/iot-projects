@@ -19,13 +19,13 @@ public:
   int getTimeOfCicle(){ return this->timeOfCicle; }
   
   //time of a single scan
-  void setTempTimeOfCicle(int tempTimeOfCicle){ this->tempTimeOfCicle = tempTimeOfCicle; }
+  void setTempTimeOfCicle(int _tempTimeOfCicle){ this->tempTimeOfCicle = _tempTimeOfCicle; }
 
   //read only the change of potenziometer
-  void setTempTimeOfCicleByPot(int tempTimeOfCicle){
-    if(tempTimeOfCicleByPot != tempTimeOfCicle){
-      setTempTimeOfCicle(tempTimeOfCicle);
-      tempTimeOfCicleByPot = tempTimeOfCicle;
+  void setTempTimeOfCicleByPot(int _tempTimeOfCicle){
+    if(tempTimeOfCicleByPot != _tempTimeOfCicle){
+      setTempTimeOfCicle(_tempTimeOfCicle);
+      tempTimeOfCicleByPot = _tempTimeOfCicle;
     }
   }
 

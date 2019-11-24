@@ -14,8 +14,10 @@ bool GUI::checkManual(){
     	String buff = String(msg->getContent());
         String command = buff.substring(0, buff.indexOf(DELIMETER));
         String mode = buff.substring(buff.indexOf(DELIMETER)+1);
-        Serial.println(String(command + " " + mode));
-    	return command == "m" && mode == "m";
+    	if(command == "m" && mode == "m")
+            return MsgService.clear();
+        else
+            return false;
     }
     return false;
 }
@@ -26,7 +28,10 @@ bool GUI::checkSingle(){
     	String buff = String(msg->getContent());
         String command = buff.substring(0, buff.indexOf(DELIMETER));
         String mode = buff.substring(buff.indexOf(DELIMETER)+1);
-    	return command == "m" && mode == "s";
+    	if(command == "m" && mode == "s")
+            return MsgService.clear();
+        else
+            return false;
     }
     return false;
 }
@@ -37,7 +42,10 @@ bool GUI::checkAuto(){
     	String buff = String(msg->getContent());
         String command = buff.substring(0, buff.indexOf(DELIMETER));
         String mode = buff.substring(buff.indexOf(DELIMETER)+1);
-    	return command == "m" && mode == "a";
+    	if(command == "m" && mode == "a")
+            return MsgService.clear();
+        else
+            return false;
     }
     return false;
 }
@@ -46,9 +54,8 @@ void GUI::sendScan(int angle, float distance){
     MsgService.sendMsg(angle+String(":")+distance);
 };
 
-// Single s, Manual m, Auto a
 void GUI::sendCurrentMode(String mode){
-    MsgService.sendMsg(mode);
+    MsgService.sendMsg("arduino:m:" + mode);
 }
 
 // a:VAL
@@ -59,7 +66,12 @@ int GUI::getAngle() {
         String command = buff.substring(0, buff.indexOf(DELIMETER));
         String angleToParse = buff.substring(buff.indexOf(DELIMETER)+1);
     	int angle = angleToParse.toInt();
-    	return command == "a" ? angle : -1;
+        if(command == "a") {
+            MsgService.clear();
+            return angle;
+        } else {
+            return -1;
+        }
     } else {
     	return -1;
     }
@@ -72,7 +84,12 @@ int GUI::getSpeed() {
         String command = buff.substring(0, buff.indexOf(DELIMETER));
         String speedToParse = buff.substring(buff.indexOf(DELIMETER)+1);
     	int speed = speedToParse.toInt();
-    	return command == "s" ? speed : -1;
+        if(command == "s") {
+            MsgService.clear();
+            return speed;
+        } else {
+            return -1;
+        }
     } else {
     	return -1;
     }

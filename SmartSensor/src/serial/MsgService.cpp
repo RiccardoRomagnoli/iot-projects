@@ -12,13 +12,16 @@ bool MsgServiceClass::isMsgAvailable(){
 Msg* MsgServiceClass::receiveMsg(){
   if (msgAvailable){
     Msg* msg = currentMsg;
-    msgAvailable = false;
-    currentMsg = NULL;
-    content = "";
     return msg;  
   } else {
     return NULL; 
   }
+}
+bool MsgServiceClass::clear(){
+  currentMsg = NULL;
+  msgAvailable = false;
+  content = "";
+  return true;
 }
 
 void MsgServiceClass::init(){
@@ -30,7 +33,9 @@ void MsgServiceClass::init(){
 }
 
 void MsgServiceClass::sendMsg(const String& msg){
-  Serial.println(msg);  
+  Serial.println(msg);
+  //Clear data send from buffer
+  MsgService.clear();
 }
 
 void serialEvent() {
@@ -39,7 +44,7 @@ void serialEvent() {
     char ch = (char) Serial.read();
     if (ch == '\n'){
       MsgService.currentMsg = new Msg(content);
-      MsgService.msgAvailable = true;      
+      MsgService.msgAvailable = true;
     } else {
       content += ch;      
     }

@@ -45,9 +45,12 @@ void SetModeTask::tick(){
         autoTask->setActive(true);
       }
       sharedState->setTempTimeOfCicleByPot(pot->readPotenziometro() * 1000 / POSITIONS);
-      if(gui->getSpeed() != -1)
-        sharedState->setTempTimeOfCicle(gui->getSpeed() * 1000 / POSITIONS);
-      break;    
+      int speed = gui->getSpeed();
+      if(speed != -1)
+        sharedState->setTempTimeOfCicle( speed * 1000 / POSITIONS);
+      break;
+      //clear any buffer
+      gui->checkSingle(); 
     }
     
     case AUTO:{
@@ -64,8 +67,11 @@ void SetModeTask::tick(){
         singleTask->setActive(true);
       }
       sharedState->setTempTimeOfCicleByPot(pot->readPotenziometro() * 1000 / POSITIONS);
-      if(gui->getSpeed() != -1)
-        sharedState->setTempTimeOfCicle(gui->getSpeed() * 1000 / POSITIONS);
+      int speed = gui->getSpeed();
+      if(speed != -1)
+        sharedState->setTempTimeOfCicle( speed * 1000 / POSITIONS);
+      //clear any buffer
+      gui->checkAuto();
       break;    
     }
 
@@ -82,6 +88,8 @@ void SetModeTask::tick(){
         manualTask->setActive(false);
         autoTask->setActive(true);
       }
+      //clear any buffer
+      gui->checkManual();
       break;    
     }
   }

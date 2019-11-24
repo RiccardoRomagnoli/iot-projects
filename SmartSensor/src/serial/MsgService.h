@@ -32,7 +32,7 @@ public:
 
   bool isMsgAvailable();
   Msg* receiveMsg();
-  
+  bool clear();
   void sendMsg(const String& msg);
 };
 
