@@ -13,6 +13,8 @@ public class MyBarChart {
 	
 	private static DefaultCategoryDataset objDataset;
 	
+	private SouthPanel panel;
+	
 	public MyBarChart() {
 		objDataset = new DefaultCategoryDataset();
 	}
@@ -32,11 +34,23 @@ public class MyBarChart {
 		return objChart.createBufferedImage(Settings.getMainFrameWidth(), 210);
 	}
 	
-	public void addDataToDataSet(double value, String legend) {
-		objDataset.addValue(value, legend, "");
+	public void addDataToDataSet(double distance, String legend) {
+		objDataset.addValue(distance, legend, "");
 	}
 	
 	public void clearDataSet(){
 		objDataset.clear();
+	}
+	
+	public void refresh() {
+		
+	}
+
+	public void setPanel(SouthPanel panel) {
+		this.panel = panel;
+	}
+	
+	public SouthPanel getPanel() {
+		return panel;
 	}
 }
