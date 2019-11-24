@@ -56,7 +56,7 @@ public class SingleSerialCommunication {
 		serial.sendMsg(msg);
 	}
 	
-	public void changeMode(String mode) {
+	public void changeMode(String mode) throws Exception {
 		serial.changeMode(mode);
 	}
 	

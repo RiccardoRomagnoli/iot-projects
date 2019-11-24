@@ -61,7 +61,7 @@ public class SerialCommunication {
 		channel.sendMsg(msg);
 	}
 	
-	public void messageArrived(String message) {
+	public void messageArrived(String message) throws Exception {
 		System.out.println(message);
 		/*String[] stringhe = message.split(":");
 		if(firstMessage) {
@@ -129,7 +129,7 @@ public class SerialCommunication {
 		
 	}
 	
-	public void changeMode(String mode) {
+	public void changeMode(String mode) throws Exception {
 		int tab = 0;
 		if(mode.contentEquals(Settings.getSingleMode())) {
 			tab = 1;
@@ -137,6 +137,9 @@ public class SerialCommunication {
 		if(mode.contentEquals(Settings.getAutoMode())) {
 			tab = 2;
 		}
+		/*if(tab == 0) {
+			this.sendMsg("a:" + manualSerial.returnRotation());
+		}*/
 		this.currentMode = mode;
 		TabbedPanel panel = frame.getTabbedPane();
 		panel.setSelectedIndex(tab);

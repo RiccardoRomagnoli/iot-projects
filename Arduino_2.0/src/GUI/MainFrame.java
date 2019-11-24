@@ -47,7 +47,7 @@ public class MainFrame extends JFrame{
         main.setLocation(x, y);
 	}
 	
-	public String getSelectedTab() {
+	public String getSelectedTab() throws Exception {
 		serial.changeMode(tabbedPanel.getSelectedComponent().getName());
 		return tabbedPanel.getSelectedComponent().getName();
 	}

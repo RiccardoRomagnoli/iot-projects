@@ -24,22 +24,38 @@ public class ManualSerialCommunication {
 		this.serial = serial;
 	}
 	
+	public int returnRotation() {
+		int x;
+		x = Integer.parseInt(rotationGradeLabel.getText().replace("°", ""));
+		return  x;
+	}
+	
 	public void sendMsgManualDx() throws Exception {
 		angle += Settings.getManualAngleDelta();
+		if(angle > 180) {
+			angle -= Settings.getManualAngleDelta();
+		}
+		else {
 		rotationGradeLabel.setText(Integer.toString(angle) + "°");
 		serial.sendMsg("a:" + Integer.toString(angle));
 		buttons.disableButton(true);
 		Thread.sleep(500);
 		buttons.disableButton(false);
+		}
 	}
 	
 	public void sendMsgManualSx() throws Exception {
 		angle -= Settings.getManualAngleDelta();
+		if(angle < 0) {
+			angle += Settings.getManualAngleDelta();
+		}
+		else {
 		rotationGradeLabel.setText(Integer.toString(angle) + "°");
 		serial.sendMsg("a:" + Integer.toString(angle));
 		buttons.disableButton(true);
 		Thread.sleep(200);
 		buttons.disableButton(false);
+		}
 	}
 	
 	public void changeDegreeLabel(String degree) {
