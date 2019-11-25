@@ -48,9 +48,9 @@ void SetModeTask::tick(){
       int speed = gui->getSpeed();
       if(speed != -1)
         sharedState->setTempTimeOfCicle( speed * 1000 / POSITIONS);
-      break;
       //clear any buffer
-      gui->checkSingle(); 
+      gui->checkSingle();
+      break; 
     }
     
     case AUTO:{
