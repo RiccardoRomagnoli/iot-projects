@@ -1,2 +1,2 @@
-# IoT Project 2
+# IoT Projects
 
