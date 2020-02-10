@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.UUID;
 
 public class BluetoothServer extends Thread {

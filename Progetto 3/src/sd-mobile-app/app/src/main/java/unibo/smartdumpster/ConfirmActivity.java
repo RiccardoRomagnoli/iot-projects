@@ -16,6 +16,7 @@ import org.w3c.dom.Text;
 import java.io.Serializable;
 
 import unibo.btlib.BluetoothChannel;
+import unibo.smartdumpster.utils.ChannelUtility;
 
 /**
  * Created by Riccardo on 11/04/2017.
@@ -26,20 +27,26 @@ public class ConfirmActivity extends Activity implements View.OnClickListener, S
     TextView label;
     Button btnConferma, btnAnnulla, btnEstendi;
     ProgressBar bar;
-    String typeDeposit[];
+    String typeDeposit;
     private BluetoothChannel btChannel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent ii = getIntent();
-        typeDeposit = ii.getStringArrayExtra("TYPE");
-        btChannel = (BluetoothChannel) ii.getSerializableExtra("BT");
         this.setFinishOnTouchOutside(false);
         setTitle("Conferma Deposito");
 
         setContentView(R.layout.activity_confirm);
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+/*        typeDeposit = ii.getStringArrayExtra("TYPE");
+        btChannel = (BluetoothChannel) ii.getSerializableExtra("BT");*/
+
+        Bundle bundle = ii.getExtras();
+
+        typeDeposit = bundle.getString("TYPE");
 
         label = findViewById(R.id.txtTempo);
         label.setOnEditorActionListener(new TextView.OnEditorActionListener(){
@@ -72,15 +79,12 @@ public class ConfirmActivity extends Activity implements View.OnClickListener, S
             switch (v.getId()) {
                 case R.id.btnConferma:
                     //Avvenuto deposito
-                    btChannel.sendMessage("DEPOSITED");
-                    Toast t = Toast.makeText(getApplicationContext(),"*Confermato*\n"+typeDeposit[0], Toast.LENGTH_LONG);
-                    t.show();
+                    ChannelUtility.sendMessage("DEPOSITED");
+                    finish();
                     break;
                 case R.id.btnEstendi:
                     //richiesta estensione
-                    btChannel.sendMessage("ESTENDI");
-                    t = Toast.makeText(getApplicationContext(), "*Esteso*\n", Toast.LENGTH_LONG);
-                    t.show();
+                    ChannelUtility.sendMessage("ESTENDI");
                     break;
                 case R.id.btnAnnulla:
                     finish();

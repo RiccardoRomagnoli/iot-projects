@@ -1,5 +1,7 @@
 package unibo.btlib;
 
+import java.io.Serializable;
+
 public interface CommChannel {
     void close();
 

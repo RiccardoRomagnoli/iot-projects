@@ -2,6 +2,8 @@ package unibo.btlib;
 
 import android.os.AsyncTask;
 
+import java.io.Serializable;
+
 public abstract class ConnectionTask extends AsyncTask<Void, Void, Integer> {
 
     static final int CONNECTION_DONE = 1;

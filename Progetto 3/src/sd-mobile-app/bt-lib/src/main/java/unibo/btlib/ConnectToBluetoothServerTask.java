@@ -4,9 +4,10 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.UUID;
 
-public final class ConnectToBluetoothServerTask extends ConnectionTask {
+public final class ConnectToBluetoothServerTask extends ConnectionTask  {
 
     private BluetoothSocket btSocket = null;
 

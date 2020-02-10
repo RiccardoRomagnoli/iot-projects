@@ -18,7 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.util.UUID;
 
@@ -29,13 +28,13 @@ import unibo.btlib.ConnectToBluetoothServerTask;
 import unibo.btlib.BluetoothUtils;
 import unibo.smartdumpster.netutils.Http;
 import unibo.smartdumpster.utils.C;
+import unibo.smartdumpster.utils.ChannelUtility;
 
 
-public class MainActivity extends AppCompatActivity implements Serializable {
+public class MainActivity extends AppCompatActivity {
 
     Button btnConnect;
     Button btnToken;
-    private BluetoothChannel btChannel;
     private boolean token;
     Handler timeUpdateHandler;
 
@@ -65,13 +64,18 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     protected void onStop() {
         super.onStop();
 
-        if( btChannel != null)
-            btChannel.close();
+        //Rimango connesso anche se l'app è in background o il telefono viene bloccato
+/*        if( btChannel != null)
+            btChannel.close();*/
     }
 
     private void initUI() {
         btnConnect = findViewById(R.id.btnConnect);
         btnToken = findViewById(R.id.btnToken);
+
+        findViewById(R.id.btnA).setEnabled(false);
+        findViewById(R.id.btnB).setEnabled(false);
+        findViewById(R.id.btnC).setEnabled(false);
 
         findViewById(R.id.btnToken).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,16 +85,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 try {
                     requestTokenGet();
                 }catch(Exception e) {
-                    Toast t = Toast.makeText(getApplicationContext(),"*Error HTTP*\n" + e.getMessage(), Toast.LENGTH_LONG);
-                    t.show();
-                }
-
-                boolean token = true;
-                if(token){
-                    btnConnect.setVisibility(View.VISIBLE);
-                    btnConnect.setEnabled(true);
-                    btnToken.setVisibility(View.VISIBLE);
-                    btnToken.setEnabled(false);
+                    Toast.makeText(getApplicationContext(),"*Error HTTP*\n" + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -101,8 +96,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 try {
                     connectToBTServer();
                 } catch (Exception e) {
-                    Toast t = Toast.makeText(getApplicationContext(),"*Error on Connection*\n" + e.getMessage(), Toast.LENGTH_LONG);
-                    t.show();
+                    Toast.makeText(getApplicationContext(),"*Error on Connection*\n" + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -112,16 +106,16 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             public void onClick(View v) {
                 try {
                     //Invio tipo
-                    btChannel.sendMessage("A");
+                    ChannelUtility.sendMessage("A");
 
                     Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
-                    intent.putExtra("TYPE", new String[]{"A"});
-                    intent.putExtra("BT", btChannel);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("TYPE", "A");
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }catch (Exception e)
                 {
-                    Toast t = Toast.makeText(getApplicationContext(),"*Error Onclick button*\n" + e.getMessage(), Toast.LENGTH_LONG);
-                    t.show();
+                    Toast.makeText(getApplicationContext(),"*Error Onclick button*\n" + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -131,15 +125,15 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             public void onClick(View v) {
                 try {
                     //Invio tipo
-                    btChannel.sendMessage("B");
+                    ChannelUtility.sendMessage("B");
 
                     Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
-                    intent.putExtra("TYPE", new String[]{"B"});
-                    intent.putExtra("BT", btChannel);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("TYPE", "B");
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }catch (Exception e){
-                    Toast t = Toast.makeText(getApplicationContext(),"*Error Onclick button*\n" + e.getMessage(), Toast.LENGTH_LONG);
-                    t.show();
+                    Toast.makeText(getApplicationContext(),"*Error Onclick button*\n" + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -149,11 +143,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
             public void onClick(View v) {
                 try {
                     //Invio tipo
-                    btChannel.sendMessage("C");
+                    ChannelUtility.sendMessage("C");
 
                     Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
-                    intent.putExtra("TYPE", new String[]{"C"});
-                    intent.putExtra("BT", btChannel);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("TYPE", "C");
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }catch (Exception e){
                     Toast t = Toast.makeText(getApplicationContext(),"*Error Onclick button*\n" + e.getMessage(), Toast.LENGTH_LONG);
@@ -166,25 +161,23 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     private void connectToBTServer() throws Exception {
         final BluetoothDevice serverDevice = BluetoothUtils.getPairedDeviceByName(C.bluetooth.BT_DEVICE_ACTING_AS_SERVER_NAME);
 
-        Toast t = Toast.makeText(getApplicationContext(),"OK", Toast.LENGTH_LONG);
-        t.show();
-
         final UUID uuid = BluetoothUtils.getEmbeddedDeviceDefaultUuid();
-        //final UUID uuid = BluetoothUtils.generateUuidFromString(C.bluetooth.BT_SERVER_UUID);
 
         new ConnectToBluetoothServerTask(serverDevice, uuid, new ConnectionTask.EventListener() {
             @Override
             public void onConnectionActive(final BluetoothChannel channel) {
 
                 ((TextView) findViewById(R.id.statusLabel)).setText("Status : connected to SmartDumpster");
+                btnConnect.setEnabled(false);
+                findViewById(R.id.btnA).setEnabled(true);
+                findViewById(R.id.btnB).setEnabled(true);
+                findViewById(R.id.btnC).setEnabled(true);
 
-
-                btChannel = channel;
-                btChannel.registerListener(new RealBluetoothChannel.Listener() {
+                ChannelUtility.setChannel(channel);
+                ChannelUtility.registerListener(new RealBluetoothChannel.Listener() {
                     @Override
                     public void onMessageReceived(String receivedMessage) {
-                        Toast t = Toast.makeText(getApplicationContext(),"*Ricevuto: *\n"+receivedMessage, Toast.LENGTH_LONG);
-                        t.show();
+                        Toast.makeText(getApplicationContext(),"*Ricevuto: *\n"+receivedMessage, Toast.LENGTH_LONG).show();
 
                         if(receivedMessage.contains("TIME")){
                             //update timedown
@@ -196,15 +189,14 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
                     @Override
                     public void onMessageSent(String sentMessage) {
-                        if(sentMessage == "DEPOSITED"){
+                        if (sentMessage.equals("DEPOSITED")) {
                             try {
                                 depositoPost();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
-                        Toast t = Toast.makeText(getApplicationContext(),"*Inviato: *\n"+sentMessage, Toast.LENGTH_LONG);
-                        t.show();
+                        Toast.makeText(getApplicationContext(), "*Inviato: *\n" + sentMessage, Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -236,22 +228,30 @@ public class MainActivity extends AppCompatActivity implements Serializable {
 
     private void requestTokenGet(){
         final String url = "http://dummy.restapiexample.com/api/v1/employees";
-
-        Http.get(url, response -> {
-            if(response.code() == HttpURLConnection.HTTP_OK){
-                try{
-                    Toast t = Toast.makeText(getApplicationContext(), "*Comunicazione Richiesta Token Avvenuta*\n" + response.contentAsString(), Toast.LENGTH_LONG);
-                    t.show();
-                    setToken(Boolean.getBoolean(response.contentAsString()));
-                }catch (IOException e){
-
+        try{
+            Http.get(url, response -> {
+                if(response.code() == HttpURLConnection.HTTP_OK){
+                    try{
+                        Toast.makeText(getApplicationContext(), "*Comunicazione Richiesta Token Avvenuta*\n" + response.contentAsString(), Toast.LENGTH_LONG).show();
+                        //setToken(Boolean.getBoolean(response.contentAsString()));
+                        setToken(true);
+                    }catch (IOException e){
+                        Toast.makeText(getApplicationContext(), "*Comunicazione Richiesta Token ERRORE*\n", Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-        });
+            });
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(), "*ERRORE HTTP*\n", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void setToken(boolean value){
-        token = value;
+        if(value) {
+            btnConnect.setVisibility(View.VISIBLE);
+            btnConnect.setEnabled(true);
+            btnToken.setVisibility(View.VISIBLE);
+            btnToken.setEnabled(false);
+        }
     }
 
     private void depositoPost() throws JSONException {

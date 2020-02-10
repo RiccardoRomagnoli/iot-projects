@@ -10,7 +10,7 @@ import java.util.List;
 
 import unibo.btlib.utils.C;
 
-public abstract class BluetoothChannel implements CommChannel, Serializable{
+public abstract class BluetoothChannel implements CommChannel{
 
     private List<Listener> listeners = new ArrayList<>();
 

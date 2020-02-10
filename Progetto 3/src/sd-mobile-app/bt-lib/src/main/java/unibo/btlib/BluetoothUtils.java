@@ -3,6 +3,7 @@ package unibo.btlib;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
+import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 

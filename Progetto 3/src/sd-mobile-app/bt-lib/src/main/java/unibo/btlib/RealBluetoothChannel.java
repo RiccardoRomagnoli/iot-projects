@@ -8,6 +8,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
+import java.security.SecureRandom;
 import java.util.Arrays;
 
 import unibo.btlib.utils.C;
