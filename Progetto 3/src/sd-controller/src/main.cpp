@@ -16,8 +16,8 @@
 #define LEDA_PIN 10
 #define LEDB_PIN 9
 #define LEDC_PIN 8
-#define TXDBT_PIN 2
-#define RXDBT_PIN 3
+#define TXDBT_PIN 3
+#define RXDBT_PIN 2
 
 Scheduler sched;
 Task *t;

@@ -3,7 +3,7 @@
 #include "communication/GUI.h"
 
 #define SEC 1000
-#define TIMEOUT_TIME 15*SEC
+#define TIMEOUT_TIME_SEC 15
 
 MainTask::MainTask(ServoMotor* servo, Light* ledA, Light* ledB, Light* ledC, GUI* gui){
   this->ledA = ledA;
@@ -71,7 +71,12 @@ void MainTask::tick(){
           gui->sendConfirm();
         }
         if(gui->checkExtend()){
+          timerSec = TIMEOUT_TIME_SEC;
           timeElapsed=0;
+        }
+        if(gui->checkBack()){
+          timeElapsed=0;
+          state = TIMEOUT;
         }
       }
       timeElapsed+=this->getPeriod();

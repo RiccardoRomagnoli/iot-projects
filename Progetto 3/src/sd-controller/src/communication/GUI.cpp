@@ -59,6 +59,21 @@ bool GUI::checkExtend(){
   }
 }
 
+bool GUI::checkBack(){
+  if (msgService->isMsgAvailable()) {
+    Msg* msg = msgService->receiveMsg();
+    Serial.println(msg->getContent());    
+    if (msg->getContent() == "BACK"){
+       return true;
+    }else{
+       return false;
+    }
+    delete msg;
+  }else{
+    return false;
+  }
+}
+
 void GUI::sendConfirm(){
     msgService->sendMsg(Msg("DEPOSITED"));
 };

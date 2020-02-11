@@ -14,6 +14,7 @@ public:
   Type getType();
   bool checkDeposit();
   bool checkExtend();
+  bool checkBack();
 
   void sendConfirm();
   void sendTime(int sec);

@@ -91,6 +91,8 @@ public class ConfirmActivity extends Activity implements View.OnClickListener, S
                     ChannelUtility.sendMessage("EXTEND");
                     break;
                 case R.id.btnAnnulla:
+                    //Comunico annullamento operazione
+                    ChannelUtility.sendMessage("BACK");
                     finish();
                     break;
             }
