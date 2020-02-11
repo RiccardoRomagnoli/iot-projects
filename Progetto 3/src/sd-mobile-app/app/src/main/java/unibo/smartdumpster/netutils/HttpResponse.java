@@ -34,7 +34,7 @@ public class HttpResponse {
             while ((line = reader.readLine()) != null) {
                 response.append(line);
             }
-        }
+        }catch (Exception e){}
 
         return response.toString();
     }

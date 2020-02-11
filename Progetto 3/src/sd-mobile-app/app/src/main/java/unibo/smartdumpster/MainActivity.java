@@ -64,9 +64,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        //Rimango connesso anche se l'app è in background o il telefono viene bloccato
-/*        if( btChannel != null)
-            btChannel.close();*/
+        //Se esco dalla app lo smartdumpster è disponibile alla connessione da altri devices
+        ChannelUtility.close();
+        btnConnect.setEnabled(true);
+        ((TextView) findViewById(R.id.statusLabel)).setText("Status : Not Connected");
+
+        //rilascio token e abilito btntocken e blocco i tre pulsanti A B C
+        resetUI();
     }
 
     private void initUI() {
@@ -76,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnA).setEnabled(false);
         findViewById(R.id.btnB).setEnabled(false);
         findViewById(R.id.btnC).setEnabled(false);
+
+        ((TextView) findViewById(R.id.statusLabel)).setText("Status : Not Connected");
 
         findViewById(R.id.btnToken).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,11 +173,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onConnectionActive(final BluetoothChannel channel) {
 
-                ((TextView) findViewById(R.id.statusLabel)).setText("Status : connected to SmartDumpster");
+                ((TextView) findViewById(R.id.statusLabel)).setText("Status : Connected to SmartDumpster");
                 btnConnect.setEnabled(false);
-                findViewById(R.id.btnA).setEnabled(true);
-                findViewById(R.id.btnB).setEnabled(true);
-                findViewById(R.id.btnC).setEnabled(true);
+                if(!btnToken.isEnabled()) {
+                    findViewById(R.id.btnA).setEnabled(true);
+                    findViewById(R.id.btnB).setEnabled(true);
+                    findViewById(R.id.btnC).setEnabled(true);
+                }
 
                 ChannelUtility.setChannel(channel);
                 ChannelUtility.registerListener(new RealBluetoothChannel.Listener() {
@@ -203,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onConnectionCanceled() {
-                ((TextView) findViewById(R.id.statusLabel)).setText("Status : unable to connect");
+                ((TextView) findViewById(R.id.statusLabel)).setText("Status : Unable to Connect");
             }
         }).execute();
     }
@@ -221,9 +229,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        Toast t = Toast.makeText(getApplicationContext(),"*WTF*\n", Toast.LENGTH_LONG);
-        t.show();
     }
 
     private void requestTokenGet(){
@@ -247,11 +252,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void setToken(boolean value){
         if(value) {
-            btnConnect.setVisibility(View.VISIBLE);
-            btnConnect.setEnabled(true);
-            btnToken.setVisibility(View.VISIBLE);
             btnToken.setEnabled(false);
+            if(!btnConnect.isEnabled()) {
+                findViewById(R.id.btnA).setEnabled(true);
+                findViewById(R.id.btnB).setEnabled(true);
+                findViewById(R.id.btnC).setEnabled(true);
+            }
         }
+    }
+
+    private void resetUI(){
+        btnToken.setEnabled(true);
+        findViewById(R.id.btnA).setEnabled(false);
+        findViewById(R.id.btnB).setEnabled(false);
+        findViewById(R.id.btnC).setEnabled(false);
     }
 
     private void depositoPost() throws JSONException {
@@ -266,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Toast t = Toast.makeText(getApplicationContext(),"*Comunicazione Deposito Avvenuta*\n" + response.contentAsString(), Toast.LENGTH_LONG);
                     t.show();
+                    resetUI();
                 } catch (Exception e) {
                     Toast t = Toast.makeText(getApplicationContext(),"*Errore HTTP*\n" + e.getMessage(), Toast.LENGTH_LONG);
                     t.show();

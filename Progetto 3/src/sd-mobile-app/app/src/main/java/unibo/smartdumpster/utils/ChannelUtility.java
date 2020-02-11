@@ -25,4 +25,10 @@ public class ChannelUtility {
             btChannel.get().registerListener(listener);
         }
     }
+
+    public static void close(){
+        if(btChannel.isPresent()){
+            btChannel.get().close();
+        }
+    }
 }
