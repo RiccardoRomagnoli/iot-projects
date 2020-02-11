@@ -21,7 +21,7 @@ class MsgServiceBT {
     
 public: 
   MsgServiceBT(int rxPin, int txPin);  
-  void init();  
+  void init();
   bool isMsgAvailable();
   Msg* receiveMsg();
   bool sendMsg(Msg msg);
