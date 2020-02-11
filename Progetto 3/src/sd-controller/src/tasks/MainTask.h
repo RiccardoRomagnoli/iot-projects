@@ -24,6 +24,7 @@ private:
   Light* ledC;
   GUI* gui;
   int timeElapsed;
+  int timerSec;
 };
 
 #endif

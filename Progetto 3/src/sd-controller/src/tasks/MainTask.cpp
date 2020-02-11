@@ -1,7 +1,9 @@
 #include "MainTask.h"
 #include "Arduino.h"
+#include "communication/GUI.h"
 
 #define SEC 1000
+#define TIMEOUT_TIME 15*SEC
 
 MainTask::MainTask(ServoMotor* servo, Light* ledA, Light* ledB, Light* ledC, GUI* gui){
   this->ledA = ledA;
@@ -28,20 +30,59 @@ void MainTask::tick(){
   switch (state)
   {
     case ACCEPTING:{
-      ledA->switchOn();
-      ledC->switchOff();
-      state = TIMING;
+      timeElapsed=0;
+      timerSec = 15;
+      Type selectedType = gui->getType();
+      switch(selectedType){
+        case NONE:
+          break;
+        case A_TYPE:
+          ledA->switchOn();
+          servo->open();
+          state = TIMING;
+          break;
+        case B_TYPE:
+          ledB->switchOn();
+          servo->open();
+          state = TIMING;
+          break;
+        case C_TYPE:
+          ledC->switchOn();
+          servo->open();
+          state = TIMING;
+          break;
+      }
       break;
     }
     case TIMING:{
-      ledB->switchOn();
-      state = TIMEOUT;
+      if(timeElapsed >= SEC){
+        gui->sendTime(--timerSec);
+        timeElapsed=0;
+      }
+      if(timerSec==0){
+        state = TIMEOUT;
+      }else{
+        if(gui->checkDeposit()){
+          state = ACCEPTING;
+          ledA->switchOff();
+          ledB->switchOff();
+          ledC->switchOff();
+          servo->close();
+          gui->sendConfirm();
+        }
+        if(gui->checkExtend()){
+          timeElapsed=0;
+        }
+      }
+      timeElapsed+=this->getPeriod();
       break;
     }
     case TIMEOUT:{
-      ledC->switchOn();
+      state = ACCEPTING;
       ledA->switchOff();
-      state = IDLE;
+      ledB->switchOff();
+      ledC->switchOff();
+      servo->close();
       break;
     }
     case IDLE:{

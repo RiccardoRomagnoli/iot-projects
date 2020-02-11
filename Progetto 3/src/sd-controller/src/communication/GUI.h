@@ -4,9 +4,9 @@
 #include "MsgServiceBT.h"
 #include "Arduino.h"
 
+enum Type { A_TYPE, B_TYPE, C_TYPE, NONE };
+
 class GUI {
-  
-typedef enum { A_TYPE, B_TYPE, C_TYPE, NONE } Type;
 
 public:
   GUI(int TXDBT_PIN, int RXDBT_PIN);

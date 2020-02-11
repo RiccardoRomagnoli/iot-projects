@@ -10,7 +10,7 @@ GUI::GUI(int TXDBT_PIN, int RXDBT_PIN){
     msgService->init();
 }
 
-GUI::Type GUI::getType(){
+Type GUI::getType(){
   if (msgService->isMsgAvailable()) {
     Msg* msg = msgService->receiveMsg();
     Serial.println(msg->getContent());    

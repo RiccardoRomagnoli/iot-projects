@@ -24,5 +24,5 @@ void ServoMotorImpl::open(){
   this->setPosition(180);
 }
 void ServoMotorImpl::close(){
-this->setPosition(0);
+  this->setPosition(0);
 }
