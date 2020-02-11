@@ -54,6 +54,10 @@ public class ConfirmActivity extends Activity implements View.OnClickListener, S
             public boolean onEditorAction(TextView t, int i, KeyEvent k){
                 if(t.toString().contains("0")){
                     finish();
+                    findViewById(R.id.btnToken).setEnabled(true);
+                    findViewById(R.id.btnA).setEnabled(false);
+                    findViewById(R.id.btnB).setEnabled(false);
+                    findViewById(R.id.btnC).setEnabled(false);
                 }
                 return false;
             }
