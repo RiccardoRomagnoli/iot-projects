@@ -84,7 +84,7 @@ public class ConfirmActivity extends Activity implements View.OnClickListener, S
                     break;
                 case R.id.btnEstendi:
                     //richiesta estensione
-                    ChannelUtility.sendMessage("ESTENDI");
+                    ChannelUtility.sendMessage("EXTEND");
                     break;
                 case R.id.btnAnnulla:
                     finish();

@@ -193,17 +193,19 @@ public class MainActivity extends AppCompatActivity {
                             msg.obj = receivedMessage;
                             timeUpdateHandler.handleMessage(msg);
                         }
-                    }
 
-                    @Override
-                    public void onMessageSent(String sentMessage) {
-                        if (sentMessage.equals("DEPOSITED")) {
+                        //reset gui e invio conferma al sd-service dopo aver ricevuto conferma dal controller
+                        if (receivedMessage.equals("DEPOSITED")) {
                             try {
                                 depositoPost();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
+                    }
+
+                    @Override
+                    public void onMessageSent(String sentMessage) {
                         Toast.makeText(getApplicationContext(), "*Inviato: *\n" + sentMessage, Toast.LENGTH_LONG).show();
                     }
                 });
