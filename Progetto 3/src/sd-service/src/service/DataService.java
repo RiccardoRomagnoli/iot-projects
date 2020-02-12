@@ -51,11 +51,32 @@ public class DataService extends AbstractVerticle {
 	}
 	
 	private void doDeposit(RoutingContext routingContext) {
-	
+		HttpServerResponse response = routingContext.response();
+		JsonObject res = routingContext.getBodyAsJson();
+		if (res == null) {
+			sendError(400, response);
+		} else {
+			String type = res.getString("type");
+			String date = res.getString("date");
+			
+			values.addFirst(new DataPoint(type, date));
+			if (values.size() > MAX_SIZE) {
+				values.removeLast();
+			}
+			
+			log("New type: " + type + " in " + date + " respectively " + values.getFirst().getDate().getDate());
+			response.setStatusCode(200).end();
+		}
 	}
 	
 	private void sendToken(RoutingContext routingContext) {
-		
+		JsonArray arr = new JsonArray();
+		JsonObject data = new JsonObject();
+		data.put("value", true);
+		arr.add(data);
+		routingContext.response()
+			.putHeader("content-type", "application/json")
+			.end(arr.encodePrettily());
 	}
 	
 	private void sendDeposits(RoutingContext routingContext) {
@@ -77,7 +98,7 @@ public class DataService extends AbstractVerticle {
 			String place = res.getString("place");
 			long time = System.currentTimeMillis();
 			
-			values.addFirst(new DataPoint(value, time, place));
+			//values.addFirst(new DataPoint(value, time, place));
 			if (values.size() > MAX_SIZE) {
 				values.removeLast();
 			}
@@ -91,9 +112,9 @@ public class DataService extends AbstractVerticle {
 		JsonArray arr = new JsonArray();
 		for (DataPoint p: values) {
 			JsonObject data = new JsonObject();
-			data.put("time", p.getTime());
-			data.put("value", p.getValue());
-			data.put("place", p.getPlace());
+			//data.put("time", p.getTime());
+			//data.put("value", p.getValue());
+			//data.put("place", p.getPlace());
 			arr.add(data);
 		}
 		routingContext.response()

@@ -1,26 +1,22 @@
 package service;
 
+import java.util.*;
 
 class DataPoint {
-	private double value;
-	private long time;
-	private String place;
+	private Date date;
+	private String type;
 	
-	public DataPoint(double value, long time, String place) {
-		this.value = value;
-		this.time = time;
-		this.place = place;
+	@SuppressWarnings("deprecation")
+	public DataPoint(String type, String date) {
+		this.type = type;
+		this.date = new Date(date);
 	}
 	
-	public double getValue() {
-		return value;
+	public String getType() {
+		return type;
 	}
 	
-	public long getTime() {
-		return time;
-	}
-	
-	public String getPlace() {
-		return place;
+	public Date getDate() {
+		return date;
 	}
 }
