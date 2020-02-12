@@ -49,14 +49,6 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), C.bluetooth.ENABLE_BT_REQUEST);
         }
 
-        timeUpdateHandler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                String time = ((String)msg.obj).split(":")[1];
-                ((TextView) findViewById(R.id.txtTempo)).setText("Tempo Rimanente: "+time);
-            }
-        };
-
         initUI();
     }
 
@@ -185,17 +177,17 @@ public class MainActivity extends AppCompatActivity {
                 ChannelUtility.registerListener(new RealBluetoothChannel.Listener() {
                     @Override
                     public void onMessageReceived(String receivedMessage) {
-                        Toast.makeText(getApplicationContext(),"*Ricevuto: *\n"+receivedMessage, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(),"*Ricevuto: *\n"+receivedMessage, Toast.LENGTH_LONG).show();
 
-                        if(receivedMessage.contains("TIME")){
-                            //update timedown
-                            Message msg = new Message();
-                            msg.obj = receivedMessage;
-                            timeUpdateHandler.handleMessage(msg);
+                        if(receivedMessage.contains("TIME:0")){
+                            findViewById(R.id.btnToken).setEnabled(true);
+                            findViewById(R.id.btnA).setEnabled(false);
+                            findViewById(R.id.btnB).setEnabled(false);
+                            findViewById(R.id.btnC).setEnabled(false);
                         }
 
                         //reset gui e invio conferma al sd-service dopo aver ricevuto conferma dal controller
-                        if (receivedMessage.equals("DEPOSITED")) {
+                        if (receivedMessage.contains("DEPOSITED")) {
                             try {
                                 depositoPost();
                             } catch (JSONException e) {
@@ -206,7 +198,14 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onMessageSent(String sentMessage) {
-                        Toast.makeText(getApplicationContext(), "*Inviato: *\n" + sentMessage, Toast.LENGTH_LONG).show();
+                        if(sentMessage.equals("DEPOSITED")){
+                            //block GUI
+                            findViewById(R.id.progress).setVisibility(View.VISIBLE);
+                            findViewById(R.id.btnA).setEnabled(false);
+                            findViewById(R.id.btnB).setEnabled(false);
+                            findViewById(R.id.btnC).setEnabled(false);
+                        }
+                        //Toast.makeText(getApplicationContext(), "*Inviato: *\n" + sentMessage, Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -216,21 +215,6 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) findViewById(R.id.statusLabel)).setText("Status : Unable to Connect");
             }
         }).execute();
-    }
-
-    private void depositoGet(){
-        final String url = "http://dummy.restapiexample.com/api/v1/employees";
-
-        Http.get(url, response -> {
-            if(response.code() == HttpURLConnection.HTTP_OK){
-                try {
-                    Toast t = Toast.makeText(getApplicationContext(),"*Comunicazione Deposito Avvenuta*\n" + response.contentAsString(), Toast.LENGTH_LONG);
-                    t.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     private void requestTokenGet(){
@@ -287,7 +271,14 @@ public class MainActivity extends AppCompatActivity {
                     Toast t = Toast.makeText(getApplicationContext(),"*Errore HTTP*\n" + e.getMessage(), Toast.LENGTH_LONG);
                     t.show();
                 }
+            }else{
+                Toast t = Toast.makeText(getApplicationContext(),"*Errore Comunicazione Deposito - Riprova*", Toast.LENGTH_LONG);
+                t.show();
+                findViewById(R.id.btnA).setEnabled(true);
+                findViewById(R.id.btnB).setEnabled(true);
+                findViewById(R.id.btnC).setEnabled(true);
             }
+            findViewById(R.id.progress).setVisibility(View.GONE);
         });
     }
 }

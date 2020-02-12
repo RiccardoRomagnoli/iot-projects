@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

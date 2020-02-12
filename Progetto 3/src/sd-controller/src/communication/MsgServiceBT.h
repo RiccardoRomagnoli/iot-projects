@@ -29,7 +29,6 @@ public:
 private:
   String content;
   SoftwareSerial* channel;
-  
 };
 
 #endif

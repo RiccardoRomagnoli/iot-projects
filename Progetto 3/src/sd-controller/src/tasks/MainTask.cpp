@@ -62,7 +62,7 @@ void MainTask::tick(){
       if(timerSec==0){
         state = TIMEOUT;
       }else{
-        if(gui->checkDeposit()){
+        if(gui->checkCommand(DEPOSITED)){
           state = ACCEPTING;
           ledA->switchOff();
           ledB->switchOff();
@@ -70,14 +70,15 @@ void MainTask::tick(){
           servo->close();
           gui->sendConfirm();
         }
-        if(gui->checkExtend()){
+        if(gui->checkCommand(EXTEND)){
           timerSec = TIMEOUT_TIME_SEC;
           timeElapsed=0;
         }
-        if(gui->checkBack()){
+        if(gui->checkCommand(BACK)){
           timeElapsed=0;
           state = TIMEOUT;
         }
+        gui->consumeCmd();
       }
       timeElapsed+=this->getPeriod();
       break;

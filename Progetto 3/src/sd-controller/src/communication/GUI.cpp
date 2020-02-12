@@ -29,49 +29,16 @@ Type GUI::getType(){
   }
 }
 
-bool GUI::checkDeposit(){
+bool GUI::checkCommand(Command command){
   if (msgService->isMsgAvailable()) {
-    Msg* msg = msgService->receiveMsg();
-    Serial.println(msg->getContent());    
-    if (msg->getContent() == "DEPOSITED"){
-       return true;
-    }else{
-       return false;
-    }
-    delete msg;
-  }else{
-    return false;
+    lastCommand = msgService->receiveMsg();
+    Serial.println(lastCommand->getContent());    
+    return lastCommand->getContent() == command_str[command];
   }
-}
-
-bool GUI::checkExtend(){
-  if (msgService->isMsgAvailable()) {
-    Msg* msg = msgService->receiveMsg();
-    Serial.println(msg->getContent());    
-    if (msg->getContent() == "EXTEND"){
-       return true;
-    }else{
-       return false;
-    }
-    delete msg;
-  }else{
-    return false;
+  if(lastCommand != NULL){
+    return lastCommand->getContent() == command_str[command];
   }
-}
-
-bool GUI::checkBack(){
-  if (msgService->isMsgAvailable()) {
-    Msg* msg = msgService->receiveMsg();
-    Serial.println(msg->getContent());    
-    if (msg->getContent() == "BACK"){
-       return true;
-    }else{
-       return false;
-    }
-    delete msg;
-  }else{
-    return false;
-  }
+  return false;
 }
 
 void GUI::sendConfirm(){
@@ -79,5 +46,11 @@ void GUI::sendConfirm(){
 };
 
 void GUI::sendTime(int sec){
-    msgService->sendMsg(Msg(String(sec)));
+    sendString = String("TIME:")+sec;
+    msgService->sendMsg(sendString);
+}
+
+void GUI::consumeCmd(){
+  lastCommand = NULL;
+  delete lastCommand;
 }
