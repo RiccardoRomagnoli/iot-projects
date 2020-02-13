@@ -151,9 +151,8 @@ public class DataService extends AbstractVerticle {
 		JsonArray arr = new JsonArray();
 		for (DataPoint p: values) {
 			JsonObject data = new JsonObject();
-			//data.put("time", p.getTime());
-			//data.put("value", p.getValue());
-			//data.put("place", p.getPlace());
+			data.put("type", p.getType());
+			data.put("date", p.getDate());
 			arr.add(data);
 		}
 		routingContext.response()
