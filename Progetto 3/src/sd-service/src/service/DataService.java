@@ -24,6 +24,7 @@ public class DataService extends AbstractVerticle {
 	private int port;
 	private static final int MAX_SIZE = 10;
 	private LinkedList<DataPoint> values;
+	private boolean tokenAvailability = true;
 	
 	public DataService(int port) {
 		values = new LinkedList<>();		
@@ -72,7 +73,13 @@ public class DataService extends AbstractVerticle {
 	private void sendToken(RoutingContext routingContext) {
 		JsonArray arr = new JsonArray();
 		JsonObject data = new JsonObject();
-		data.put("value", true);
+		if(this.tokenAvailability) {
+			data.put("value", true);
+			this.tokenAvailability = false;
+		}
+		else {
+			data.put("value", false);
+		}
 		arr.add(data);
 		routingContext.response()
 			.putHeader("content-type", "application/json")
@@ -86,7 +93,17 @@ public class DataService extends AbstractVerticle {
 	
 	private void setAvailability(RoutingContext routingContext) {
 		//prendere valori da json post tag: value, valore: true/false
+		HttpServerResponse response = routingContext.response();
+		JsonObject res = routingContext.getBodyAsJson();
+		if (res == null) {
+			sendError(400, response);
+		} else {
+			this.tokenAvailability = res.getBoolean("value");
+		}
+		log("Updated the token availability status...");
+		response.setStatusCode(200).end();
 	}
+
 	
 	private void handleAddNewData(RoutingContext routingContext) {
 		HttpServerResponse response = routingContext.response();
