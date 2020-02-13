@@ -88,7 +88,16 @@ public class DataService extends AbstractVerticle {
 	}
 	
 	private void sendDeposits(RoutingContext routingContext) {
-		
+		JsonArray arr = new JsonArray();
+		for (DataPoint p: values) {
+			JsonObject data = new JsonObject();
+			data.put("date", p.getDate());
+			data.put("type", p.getType());
+			arr.add(data);
+		}
+		routingContext.response()
+		.putHeader("content-type", "application/json")
+		.end(arr.encodePrettily());
 	}
 	
 	private void setAvailability(RoutingContext routingContext) {
@@ -103,7 +112,6 @@ public class DataService extends AbstractVerticle {
 		log("Updated the token availability status...");
 		response.setStatusCode(200).end();
 	}
-
 	
 	private void handleAddNewData(RoutingContext routingContext) {
 		HttpServerResponse response = routingContext.response();
