@@ -69,16 +69,18 @@ void MainTask::tick(){
           ledC->switchOff();
           servo->close();
           gui->sendConfirm();
+          gui->consumeCmd();
         }
         if(gui->checkCommand(EXTEND)){
           timerSec = TIMEOUT_TIME_SEC;
           timeElapsed=0;
+          gui->consumeCmd();
         }
         if(gui->checkCommand(BACK)){
           timeElapsed=0;
           state = TIMEOUT;
-        }
-        gui->consumeCmd();
+          gui->consumeCmd();
+        } 
       }
       timeElapsed+=this->getPeriod();
       break;
@@ -89,10 +91,6 @@ void MainTask::tick(){
       ledB->switchOff();
       ledC->switchOff();
       servo->close();
-      break;
-    }
-    case IDLE:{
-      state = ACCEPTING;
       break;
     }
   }

@@ -28,7 +28,6 @@ public class ConfirmActivity extends Activity implements View.OnClickListener {
     Button btnConferma, btnAnnulla, btnEstendi;
     ProgressBar bar;
     String typeDeposit;
-    private BluetoothChannel btChannel;
     Handler timeUpdateHandler;
 
     @Override

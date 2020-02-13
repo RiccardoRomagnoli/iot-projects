@@ -8,7 +8,7 @@
 
 class MainTask: public Task {
 
-enum { ACCEPTING, TIMING, TIMEOUT, IDLE } state;
+enum { ACCEPTING, TIMING, TIMEOUT} state;
 
 public:
   MainTask(ServoMotor* servo, Light* ledA, Light* ledB, Light* ledC, GUI* gui);

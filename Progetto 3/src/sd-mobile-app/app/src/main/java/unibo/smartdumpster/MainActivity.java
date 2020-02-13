@@ -14,11 +14,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import unibo.btlib.BluetoothChannel;
@@ -33,10 +35,17 @@ import unibo.smartdumpster.utils.ChannelUtility;
 
 public class MainActivity extends AppCompatActivity {
 
+    static String URL = "http://d93d7614.ngrok.io";
+    static long TIMEOUT = 7000;
+
     Button btnConnect;
     Button btnToken;
-    private boolean token;
-    Handler timeUpdateHandler;
+    boolean token;
+    String type;
+    TimerTask timeOutDeposit;
+    Timer t;
+    Handler timeOutHandler;
+    Handler postDeposit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         initUI();
+
+        timeOutHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                btnToken.setEnabled(true);
+                findViewById(R.id.btnA).setEnabled(false);
+                findViewById(R.id.btnB).setEnabled(false);
+                findViewById(R.id.btnC).setEnabled(false);
+                findViewById(R.id.progress).setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(),"*TimeOut - Nessuna risposta del Controller*", Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+
+    private void resetTimer(){
+        t = new Timer();
+        timeOutDeposit = new TimerTask() {
+            @Override
+            public void run() {
+                //Edit gui on main thread
+                timeOutHandler.obtainMessage(1).sendToTarget();
+            }
+        };
+        t.schedule(timeOutDeposit, TIMEOUT);
     }
 
     @Override
@@ -105,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     //Invio tipo
                     ChannelUtility.sendMessage("A");
+                    type = "A";
 
                     Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
                     Bundle bundle = new Bundle();
@@ -124,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     //Invio tipo
                     ChannelUtility.sendMessage("B");
+                    type = "B";
 
                     Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
                     Bundle bundle = new Bundle();
@@ -142,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     //Invio tipo
                     ChannelUtility.sendMessage("C");
+                    type = "C";
 
                     Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
                     Bundle bundle = new Bundle();
@@ -201,6 +237,8 @@ public class MainActivity extends AppCompatActivity {
                         if(sentMessage.equals("DEPOSITED")){
                             //block GUI
                             findViewById(R.id.progress).setVisibility(View.VISIBLE);
+                            //Se non ricevo conferma dal controller resetto la gui
+                            resetTimer();
                             findViewById(R.id.btnA).setEnabled(false);
                             findViewById(R.id.btnB).setEnabled(false);
                             findViewById(R.id.btnC).setEnabled(false);
@@ -213,26 +251,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onConnectionCanceled() {
                 ((TextView) findViewById(R.id.statusLabel)).setText("Status : Unable to Connect");
+                Toast.makeText(getApplicationContext(),"*Retry!*", Toast.LENGTH_LONG).show();
             }
         }).execute();
     }
 
     private void requestTokenGet(){
-        final String url = "http://dummy.restapiexample.com/api/v1/employees";
+        final String url = URL+"/api/token";
         try{
             Http.get(url, response -> {
                 if(response.code() == HttpURLConnection.HTTP_OK){
                     try{
-                        Toast.makeText(getApplicationContext(), "*Comunicazione Richiesta Token Avvenuta*\n" + response.contentAsString(), Toast.LENGTH_LONG).show();
-                        //setToken(Boolean.getBoolean(response.contentAsString()));
-                        setToken(true);
-                    }catch (IOException e){
-                        Toast.makeText(getApplicationContext(), "*Comunicazione Richiesta Token ERRORE*\n", Toast.LENGTH_LONG).show();
+                        JSONArray arr = new JSONArray(response.contentAsString());
+                        boolean value = Boolean.parseBoolean(arr.getJSONObject(0).getString("value"));
+
+                        Toast.makeText(getApplicationContext(), "*Token Assegnato*", Toast.LENGTH_LONG).show();
+                        setToken(value);
+                    }catch (Exception e){
+                        Toast.makeText(getApplicationContext(), "*Errore nella Comunicazione*\n"+e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             });
         }catch (Exception e){
-            Toast.makeText(getApplicationContext(), "*ERRORE HTTP*\n", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "*Errore Generico*\n", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -252,33 +293,46 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnA).setEnabled(false);
         findViewById(R.id.btnB).setEnabled(false);
         findViewById(R.id.btnC).setEnabled(false);
+        findViewById(R.id.progress).setVisibility(View.GONE);
     }
 
     private void depositoPost() throws JSONException {
 
-        final String url = "http://dummy.restapiexample.com/api/v1/create";
-        final String content = new JSONObject().put("id","value")
-                                               .put("id","value")
+        final String url = URL+"/api/dodeposit";
+        String date = java.time.LocalDate.now().toString();
+        final String content = new JSONObject().put("type", type)
+                                               .put("date", date)
                                                .toString();
 
         Http.post(url, content.getBytes(), response -> {
-            if(response.code() == HttpURLConnection.HTTP_OK){
-                try {
-                    Toast t = Toast.makeText(getApplicationContext(),"*Comunicazione Deposito Avvenuta*\n" + response.contentAsString(), Toast.LENGTH_LONG);
-                    t.show();
-                    resetUI();
-                } catch (Exception e) {
-                    Toast t = Toast.makeText(getApplicationContext(),"*Errore HTTP*\n" + e.getMessage(), Toast.LENGTH_LONG);
-                    t.show();
+            try {
+                if(response != null) {
+                    int code = response.code();
+                    if (code == HttpURLConnection.HTTP_OK) {
+                        try {
+
+                            Toast.makeText(getApplicationContext(), "*Comunicazione Deposito Avvenuta*\n" + response.contentAsString(), Toast.LENGTH_LONG).show();
+                            resetUI();
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), "*Errore HTTP*\n" + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    if (code != HttpURLConnection.HTTP_OK) {
+                        try {
+                            Toast.makeText(getApplicationContext(), "*Errore Comunicazione Deposito - Riprova*", Toast.LENGTH_LONG).show();
+                            ((Button) findViewById(R.id.btnA)).setEnabled(true);
+                            ((Button) findViewById(R.id.btnB)).setEnabled(true);
+                            ((Button) findViewById(R.id.btnC)).setEnabled(true);
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), "*Errore HTTP*\n" + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
                 }
-            }else{
-                Toast t = Toast.makeText(getApplicationContext(),"*Errore Comunicazione Deposito - Riprova*", Toast.LENGTH_LONG);
-                t.show();
-                findViewById(R.id.btnA).setEnabled(true);
-                findViewById(R.id.btnB).setEnabled(true);
-                findViewById(R.id.btnC).setEnabled(true);
+                findViewById(R.id.progress).setVisibility(View.GONE);
+            }catch(Exception e){
+                Toast.makeText(getApplicationContext(), "*Errore HTTP*\n" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-            findViewById(R.id.progress).setVisibility(View.GONE);
         });
+        t.cancel();
     }
 }
