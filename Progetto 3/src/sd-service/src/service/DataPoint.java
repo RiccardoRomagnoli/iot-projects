@@ -1,15 +1,16 @@
 package service;
 
-import java.util.*;
 
 class DataPoint {
 	private String date;
 	private String type;
+	private int weight;
 	
-	@SuppressWarnings("deprecation")
-	public DataPoint(String type, String date) {
+	
+	public DataPoint(String type, String date, int weight) {
 		this.type = type;
 		this.date = date;
+		this.weight = weight;
 	}
 	
 	public String getType() {
@@ -18,5 +19,9 @@ class DataPoint {
 	
 	public String getDate() {
 		return date;
+	}
+	
+	public int getWeight() {
+		return weight;
 	}
 }
