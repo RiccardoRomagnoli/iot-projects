@@ -82,6 +82,7 @@ public class DataService extends AbstractVerticle {
 			log("Deposit type: " + type + " in " + date);
 			response.setStatusCode(200).end();
 		}
+		this.tokenAvailability = true;
 	}
 	
 	private void sendToken(RoutingContext routingContext) {
