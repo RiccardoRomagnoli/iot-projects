@@ -38,7 +38,7 @@ public class DataService extends AbstractVerticle {
 		router.post("/api/data").handler(this::handleAddNewData);
 		router.get("/api/data").handler(this::handleGetData);
 		//SmartDumpster
-		router.get("/api/dodeposit").handler(this::doDeposit);
+		router.post("/api/dodeposit").handler(this::doDeposit);
 		router.get("/api/token").handler(this::sendToken);
 		router.get("/api/getdeposit").handler(this::sendDeposits);
 		router.post("/api/setavailability").handler(this::setAvailability);
@@ -64,7 +64,7 @@ public class DataService extends AbstractVerticle {
 				values.removeLast();
 			}
 			
-			log("New type: " + type + " in " + date + " respectively " + values.getFirst().getDate().getDate());
+			log("Deposit type: " + type + " in " + date);
 			response.setStatusCode(200).end();
 		}
 	}
@@ -77,6 +77,7 @@ public class DataService extends AbstractVerticle {
 		routingContext.response()
 			.putHeader("content-type", "application/json")
 			.end(arr.encodePrettily());
+		log("Token released");
 	}
 	
 	private void sendDeposits(RoutingContext routingContext) {
