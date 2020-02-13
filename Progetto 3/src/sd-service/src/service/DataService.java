@@ -25,6 +25,7 @@ public class DataService extends AbstractVerticle {
 	private static final int MAX_SIZE = 10;
 	private LinkedList<DataPoint> values;
 	private boolean tokenAvailability = true;
+	private int nDeposit = 0;
 	
 	public DataService(int port) {
 		values = new LinkedList<>();		
@@ -40,6 +41,7 @@ public class DataService extends AbstractVerticle {
 		router.get("/api/data").handler(this::handleGetData);
 		//SmartDumpster
 		router.post("/api/dodeposit").handler(this::doDeposit);
+		router.get("/api/ndeposit").handler(this::nDeposit);
 		router.get("/api/token").handler(this::sendToken);
 		router.get("/api/getdeposit").handler(this::sendDeposits);
 		router.post("/api/setavailability").handler(this::setAvailability);
@@ -49,6 +51,17 @@ public class DataService extends AbstractVerticle {
 			.listen(port);
 
 		log("Service ready.");
+	}
+	
+	private void nDeposit(RoutingContext routingContext) {
+		JsonArray arr = new JsonArray();
+		JsonObject data = new JsonObject();
+		data.put("value", nDeposit);
+		arr.add(data);
+		routingContext.response()
+		.putHeader("content-type", "application/json")
+		.end(arr.encodePrettily());
+		log("number of deposits sent...");
 	}
 	
 	private void doDeposit(RoutingContext routingContext) {
@@ -64,7 +77,7 @@ public class DataService extends AbstractVerticle {
 			if (values.size() > MAX_SIZE) {
 				values.removeLast();
 			}
-			
+			nDeposit++;
 			log("Deposit type: " + type + " in " + date);
 			response.setStatusCode(200).end();
 		}
