@@ -16,28 +16,36 @@ $(document).ready(function(){
                     url: server + "/api/getdeposit"
                 }).done(function (data) {
                     let dateUtili = [];
-                    let rifiutiA = 0;
-                    let rifiutiB = 0;
-                    let rifiutiC = 0;
-                    
+                    let grammiRifiutiA = 0;
+                    let grammiRifiutiB = 0;
+                    let grammiRifiutiC = 0;
+                    let nDepositiA = 0;
+                    let nDepositiB = 0;
+                    let nDepositiC = 0;
+
                     for(let i=data.length - 1; i> -1; i--){
                         let dataValore = new Date(data[i].date);
                         if(dataValore >= dataInizio && dataValore <= dataFine){
                             switch(data[i].type){
                                 case "A":
-                                    rifiutiA += data[i].weight;
+                                    nDepositiA++;
+                                    grammiRifiutiA += data[i].weight;
                                     break;
                                 case "B":
-                                    rifiutiB += data[i].weight;
+                                    nDepositiB++;
+                                    grammiRifiutiB += data[i].weight;
                                     break;
                                 case "C":
-                                    rifiutiC += data[i].weight;
+                                    nDepositiC++;
+                                    grammiRifiutiC += data[i].weight;
                                     break;
                             }
                         }
                     }
 
-                    let chartTypeData = [{ y: rifiutiA, indexLabel:"Grammi A"},{ y: rifiutiB, indexLabel:"Grammi B"},{ y: rifiutiC, indexLabel:"Grammi C"}];
+                    let chartTypeData = [{ y: grammiRifiutiA, nDepositi: nDepositiA, indexLabel:"Grammi A"},
+                                         { y: grammiRifiutiB, nDepositi: nDepositiB, indexLabel:"Grammi B"},
+                                         { y: grammiRifiutiC, nDepositi: nDepositiC, indexLabel:"Grammi C"}];
                     chartType.options.data[0].dataPoints = chartTypeData;
                     chartType.render();
                 });
@@ -137,7 +145,8 @@ $(document).ready(function(){
 		data: [
 		{
 			type: "pie",
-			showInLegend: true,
+            showInLegend: true,
+            toolTipContent: "{y} - {nDepositi}",
 			legendText: "{indexLabel}",
 		}
 		]
