@@ -13,11 +13,15 @@ Light* ledErr;
 Light* ledOk;
 
 /* wifi network name */
-String ssidName = "littlebarfly";
+String ssidName = "FASTWEB-enzo-2,4";
 /* WPA2 PSK password */
-String pwd = "seiot1920";
+String pwd = "casaenzo2017";
 /* service IP address */ 
-String address = "http://0dfeb236.ngrok.io";
+String address = "https://194aa522.ngrok.io";
+/*STATO BIDONE */
+String stato = "available";
+/*Wmax*/
+int maxWeight = 0;
 
 void setup() {                
   Serial.begin(9600);
@@ -37,42 +41,92 @@ void setup() {
   Serial.println("Connected: \n local IP: "+WiFi.localIP());
 }
 
-int sendData(String address, float value, String place){  
-   HTTPClient http;    
-   http.begin(address + "/api/data");      
-   http.addHeader("Content-Type", "application/json");     
-   String msg = 
-    String("{ \"value\": ") + String(value) + ", \"place\": \"" + place +"\" }";
-   int retCode = http.POST(msg);   
-   http.end();
-      
-   // String payload = http.getString();  
-   // Serial.println(payload);      
-   return retCode;
+int sendData(String address, String apiMethod, String key, String value){
+  int httpCode = 0;
+  if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
+  
+    HTTPClient http;    //Declare object of class HTTPClient
+  
+    http.begin(address + "/api/" + apiMethod);      //Specify request destination
+    http.addHeader("Content-Type", "application/json");  //Specify content-type header
+  
+    String msg = "{ \"" + key + "\":\"" + value + "\" }";
+    httpCode = http.POST(msg);   //Send the request
+    String payload = http.getString();                  //Get the response payload
+  
+    Serial.println(httpCode);   //Print HTTP return code
+    Serial.println(payload);    //Print request response payload
+  
+    http.end();  //Close connection
+  } 
+    
+  return httpCode;
 }
 
-void loop() {
-  int value = pot->readPotenziometro();
-  Serial.println("Value: " + String(value));
-  ledOk->switchOn();
-  Serial.println("ON");
-  delay(500);             
-  ledOk->switchOff();
-  Serial.println("OFF");   
-  delay(500);
+String getData(String address, String apiMethod){  
+  String payload = "Errore";
+  if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
+  
+    HTTPClient http;  //Declare an object of class HTTPClient
+  
+    http.begin(address + "/api/" + apiMethod);  //Specify request destination
+    int httpCode = http.GET(); //Send the request
+  
+    if (httpCode > 0) { //Check the returning code
+  
+      payload = http.getString();   //Get the request response payload
+      Serial.println(payload);             //Print the response payload
 
-  if (WiFi.status()== WL_CONNECTED){
-    /* send data */
-    Serial.println("sending "+String(value)+"...");
-    int code = sendData(address, value, "home");
-
-    /* log result */
-    if (code == 200){
-      Serial.println("ok");
-    } else {
-      Serial.println("error");
     }
-  } else { 
-    Serial.println("Error in WiFi connection");   
-  }    
+  
+    http.end();   //Close connection
+  }
+  return payload;
+}
+
+String isAvailable(){
+  return getData(address, "isAvailable");
+}
+
+int setAvailable(bool stato){
+  return sendData(address, "setavailability", "value", stato);
+}
+
+String getTotalWeight(){
+  String dati = getData(address, "ndeposit");
+  Serial.println(dati);
+  return dati;
+}
+
+void checkStato(){
+  switch(stato){
+    case "available":
+      if(!maxWeight){
+        maxWeight = pot->readPotenziometro();
+        ledOk->switchOn();
+        ledErr->switchOff();
+      }  
+    break;
+    case "not-available":
+      if(maxWeight){
+        maxWeight = 0;
+        ledOk->switchOff();
+        ledErr->switchOn();
+      }
+    break;
+  }
+}
+void loop() {
+
+  //check peso totale e switch stato
+  int pesoAttuale = getTotalWeight();
+  if(stato == "available" && pesoAttuale > maxWeight){
+    stato = "not-available";
+    setAvailable(false);
+    checkStato();
+
+  } else if(stato == "not-available" && isAvailable()) {
+    stato = "available";
+    checkStato();
+  }
 }
