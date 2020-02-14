@@ -42,10 +42,9 @@ int sendData(String address, float value, String place){
    http.begin(address + "/api/data");      
    http.addHeader("Content-Type", "application/json");     
    String msg = 
-    String("{ \"value\": ") + String(value) + 
-    ", \"place\": \"" + place +"\" }";
+    String("{ \"value\": ") + String(value) + ", \"place\": \"" + place +"\" }";
    int retCode = http.POST(msg);   
-   http.end();  
+   http.end();
       
    // String payload = http.getString();  
    // Serial.println(payload);      
@@ -62,10 +61,7 @@ void loop() {
   Serial.println("OFF");   
   delay(500);
 
-  if (WiFi.status()== WL_CONNECTED){   
-    /* read sensor */
-    float value = (float) analogRead(A0) / 1023.0;
-    
+  if (WiFi.status()== WL_CONNECTED){
     /* send data */
     Serial.println("sending "+String(value)+"...");
     int code = sendData(address, value, "home");
