@@ -6,8 +6,41 @@ $(document).ready(function(){
         dateFormat: "d-m-Y",
         onChange: [function(selectedDates){
             if(selectedDates.length == 2){
-                const dateArr = selectedDates.map(date => this.formatDate(date, "d-m-Y"));
+                const dateArr = selectedDates.map(date => this.formatDate(date, "Y-m-d"));
                 //DATA INIZIO E FINE DA USARE PER RICAVARE DATI CON UNA POST
+                let dataInizio = new Date(dateArr[0]);
+                let dataFine = new Date(dateArr[1]);
+
+                $.ajax({
+                    type: "GET",
+                    url: server + "/api/getdeposit"
+                }).done(function (data) {
+                    let dateUtili = [];
+                    let rifiutiA = 0;
+                    let rifiutiB = 0;
+                    let rifiutiC = 0;
+                    
+                    for(let i=data.length - 1; i> -1; i--){
+                        let dataValore = new Date(data[i].date);
+                        if(dataValore >= dataInizio && dataValore <= dataFine){
+                            switch(data[i].type){
+                                case "A":
+                                    rifiutiA += data[i].weight;
+                                    break;
+                                case "B":
+                                    rifiutiB += data[i].weight;
+                                    break;
+                                case "C":
+                                    rifiutiC += data[i].weight;
+                                    break;
+                            }
+                        }
+                    }
+
+                    let chartTypeData = [{ y: rifiutiA, indexLabel:"Grammi A"},{ y: rifiutiB, indexLabel:"Grammi B"},{ y: rifiutiC, indexLabel:"Grammi C"}];
+                    chartType.options.data[0].dataPoints = chartTypeData;
+                    chartType.render();
+                });
             }
         }]
     });
@@ -29,7 +62,7 @@ $(document).ready(function(){
             $("#toggleStatoBidoneAttuale").prop("checked", data[0].value ? true : false);
         });
 
-        setTimeout(checkStats, 5000);
+        setTimeout(checkStats, 2000);
     }
     
     checkStats();
@@ -51,16 +84,12 @@ $(document).ready(function(){
         //eventuale aggiornamento istantaneo dei valori di sopra
     });
 
-    function compareDataPointYAscend(dataPoint1, dataPoint2) {
-		return dataPoint1.x - dataPoint2.x;
-    }
-
     function compareDataPointYDescend(dataPoint1, dataPoint2) {
             return dataPoint2.x - dataPoint1.x;
     }
 
-    var chart = new CanvasJS.Chart("chartContainer", {
-        theme: "light2", // "light1", "light2", "dark1", "dark2"
+    var chartDate = new CanvasJS.Chart("chartDate", {
+        theme: "light2",
         animationEnabled: true,
         title:{
             text: "Deposito totale giornalieri"   
@@ -93,7 +122,24 @@ $(document).ready(function(){
             ]
         }]
     });
-    chart.options.data[0].dataPoints.sort(compareDataPointYDescend);
-    chart.render();
+    chartDate.options.data[0].dataPoints.sort(compareDataPointYDescend);
+    chartDate.render();
 
+    var chartType = new CanvasJS.Chart("chartType",
+	{
+		title:{
+			text: "Totale rifiuti per tipo"
+		},
+		legend: {
+			maxWidth: 350,
+			itemWidth: 120
+		},
+		data: [
+		{
+			type: "pie",
+			showInLegend: true,
+			legendText: "{indexLabel}",
+		}
+		]
+	});
 });
