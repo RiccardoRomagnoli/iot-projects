@@ -21,12 +21,16 @@ import java.util.Set;
 public class DataService extends AbstractVerticle {
 
 	private int port;
-	private static final int MAX_SIZE = 10;
+	private static final int MAX_SIZE = 100;
 	private LinkedList<DataPoint> values;
 	private boolean tokenAvailability = true;
 	private boolean availability = true;
 	private int nDeposit = 0;
 	private int totalWeight = 0;
+	
+	private static int min=100;
+	private static int max=1000;
+	private static int range = max-min+1;
 	
 	public DataService(int port) {
 		values = new LinkedList<>();		
@@ -51,7 +55,7 @@ public class DataService extends AbstractVerticle {
 		vertx.createHttpServer()
 			 .requestHandler(router::accept)
 			 .listen(port);
-
+		storicData();
 		log("Service ready.");
 	}
 	
@@ -73,6 +77,19 @@ public class DataService extends AbstractVerticle {
         allowedMethods.add(HttpMethod.OPTIONS);
         router.route().handler(CorsHandler.create(".*.").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
     }
+    
+    private void storicData() {
+		values.addFirst(new DataPoint("A", "2020-02-05", 754));
+		values.addFirst(new DataPoint("A", "2020-02-07", 212));
+		values.addFirst(new DataPoint("A", "2020-02-07", 365));
+		values.addFirst(new DataPoint("A", "2020-02-10", 589));
+		values.addFirst(new DataPoint("B", "2020-02-11", 458));
+		values.addFirst(new DataPoint("B", "2020-02-12", 658));
+		values.addFirst(new DataPoint("C", "2020-02-13", 885));
+		values.addFirst(new DataPoint("C", "2020-02-14", 125));
+		values.addFirst(new DataPoint("C", "2020-02-14", 963));
+		values.addFirst(new DataPoint("A", "2020-02-14", 385));
+    }
 	
 	//POST
 	private void doDeposit(RoutingContext routingContext) {
@@ -84,7 +101,8 @@ public class DataService extends AbstractVerticle {
 			String type = res.getString("type");
 			String date = res.getString("date");
 			//generazione randomica del peso dell'oggetto
-			int weight = (int)(Math.random() * 1100 -99 ); //da 100 a 1000 grammi
+
+			int weight = (int)(Math.random() * range + min); //da 100 a 1000 grammi
 			
 			values.addFirst(new DataPoint(type, date, weight));
 			if (values.size() > MAX_SIZE) {
@@ -101,7 +119,6 @@ public class DataService extends AbstractVerticle {
 	//POST
 	private void setAvailability(RoutingContext routingContext) {
 		HttpServerResponse response = routingContext.response();
-		log(routingContext.getBodyAsString());
 		JsonObject res = routingContext.getBodyAsJson();
 		if (res == null) {
 			sendError(400, response);
