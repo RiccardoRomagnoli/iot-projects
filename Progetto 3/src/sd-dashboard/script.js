@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    const server = "http://99674d79.ngrok.io";
+    const server = "https://194aa522.ngrok.io";
     const dataPickr = flatpickr("#myDataPickr", {
         mode: "range",
         dateFormat: "d-m-Y",
@@ -13,30 +13,40 @@ $(document).ready(function(){
     });
 
     function checkStats(){
-        //GET o POST DEI DATI DELLA HOME (ogni 10 secondi) da aggiornare le input text e il trigger
-        // $.get(server + "/api/ndeposit").done(function (data) {
-        //     console.log(data);
-        // });
-        $.ajax({url: server + "/api/ndeposit", 
-                method: "GET",
-                crossDomain: true,
-                dataType: "json",
-                headers: {          
-                    "accept": "application/json",
-                    "Access-Control-Allow-Origin":"*"},
-                success: function(result){
-            $("#numeroDepositiAttuale").text(result);
-        }});
-        setTimeout(checkStats, 10000);
+        $.ajax({
+            type: "GET",
+            url: server + "/api/ndeposit"
+        }).done(function (data) {
+            $("#numeroDepositiAttuale").val(data[0].nDeposit);
+            $("#quantitaAttuale").val(data[0].weight);
+        });
+
+        $.ajax({
+            type: "GET",
+            url: server + "/api/isAvailable"
+        }).done(function (data) {
+            $("#statoBidoneAttuale").val(data[0].value ? "Disponibile" : "Non disponibile");
+            $("#toggleStatoBidoneAttuale").prop("checked", data[0].value ? true : false);
+        });
+
+        setTimeout(checkStats, 5000);
     }
     
     checkStats();
 
     $("#toggleStatoBidoneAttuale").change(function(){
         if(this.checked){
-            //GET o POST che lo mette disponibile
+            $.ajax({
+                type: "POST",
+                url: server + "/api/setavailability",
+                data: {"value" : true}
+            });
         } else {
-            //GET o POST che lo disabilita
+            $.ajax({
+                type: "POST",
+                url: server + "/api/setavailability",
+                data: {"value" : true}
+            });
         }
         //eventuale aggiornamento istantaneo dei valori di sopra
     });
