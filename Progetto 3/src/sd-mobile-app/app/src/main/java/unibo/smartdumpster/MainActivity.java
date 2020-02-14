@@ -35,7 +35,7 @@ import unibo.smartdumpster.utils.ChannelUtility;
 
 public class MainActivity extends AppCompatActivity {
 
-    static String URL = "http://87fbc46d.ngrok.io";
+    static String URL = "http://194aa522.ngrok.io";
     static long TIMEOUT = 7000;
 
     Button btnConnect;
@@ -228,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
                         if (receivedMessage.contains("DEPOSITED")) {
                             try {
                                 depositoPost();
+                                releaseToken();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -278,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                             if(value) {
                                 Toast.makeText(getApplicationContext(), "*Token Assegnato*", Toast.LENGTH_LONG).show();
                             }else{
-                                Toast.makeText(getApplicationContext(), "*Token Non Assegnato*", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "*Token Non Assegnato\nSmartDumpster non disponibile o utilizzado da altro utente*", Toast.LENGTH_LONG).show();
                             }
                             setToken(value);
                         } catch (Exception e) {
@@ -346,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }else{
                     Toast.makeText(getApplicationContext(), "*Errore HTTP - Server Attivo?*\n", Toast.LENGTH_LONG).show();
+                    resetUI();
                 }
                 findViewById(R.id.progress).setVisibility(View.GONE);
             }catch(Exception e){

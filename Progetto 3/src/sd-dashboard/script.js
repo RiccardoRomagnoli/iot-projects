@@ -39,13 +39,13 @@ $(document).ready(function(){
             $.ajax({
                 type: "POST",
                 url: server + "/api/setavailability",
-                data: {"value" : true}
+                data: JSON.stringify({'value':true})
             });
         } else {
             $.ajax({
                 type: "POST",
                 url: server + "/api/setavailability",
-                data: {"value" : true}
+                data: JSON.stringify({'value':false})
             });
         }
         //eventuale aggiornamento istantaneo dei valori di sopra

@@ -8,6 +8,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 
 import java.util.HashSet;
@@ -35,15 +36,8 @@ public class DataService extends AbstractVerticle {
 	@Override
 	public void start() {		
 		Router router = Router.router(vertx);
-		router.route().handler(CorsHandler.create(".*.")
-					  .allowedMethod(io.vertx.core.http.HttpMethod.GET)
-					  .allowedMethod(io.vertx.core.http.HttpMethod.POST)
-					  .allowedMethod(io.vertx.core.http.HttpMethod.OPTIONS)
-					  .allowCredentials(true)
-					  .allowedHeader("Access-Control-Allow-Method")
-					  .allowedHeader("Access-Control-Allow-Origin")
-					  .allowedHeader("Access-Control-Allow-Credentials")
-					  .allowedHeader("Content-Type"));
+		addCorsPermissios(router);
+		router.route().handler(BodyHandler.create());		
 
 		//SmartDumpster Server API
 		router.post("/api/dodeposit").handler(this::doDeposit);
@@ -107,10 +101,12 @@ public class DataService extends AbstractVerticle {
 	//POST
 	private void setAvailability(RoutingContext routingContext) {
 		HttpServerResponse response = routingContext.response();
+		log(routingContext.getBodyAsString());
 		JsonObject res = routingContext.getBodyAsJson();
 		if (res == null) {
 			sendError(400, response);
 		} else {
+			
 			boolean newState = res.getBoolean("value");
 			this.availability = newState;
 			
