@@ -30,8 +30,6 @@ void MainTask::tick(){
   switch (state)
   {
     case ACCEPTING:{
-      timeElapsed=0;
-      timerSec = 15;
       Type selectedType = gui->getType();
       switch(selectedType){
         case NONE:
@@ -40,16 +38,22 @@ void MainTask::tick(){
           ledA->switchOn();
           servo->open();
           state = TIMING;
+          timeElapsed=0;
+          timerSec = 15;
           break;
         case B_TYPE:
           ledB->switchOn();
           servo->open();
           state = TIMING;
+          timeElapsed=0;
+          timerSec = 15;
           break;
         case C_TYPE:
           ledC->switchOn();
           servo->open();
           state = TIMING;
+          timeElapsed=0;
+          timerSec = 15;
           break;
       }
       break;
@@ -74,6 +78,7 @@ void MainTask::tick(){
         if(gui->checkCommand(EXTEND)){
           timerSec = TIMEOUT_TIME_SEC;
           timeElapsed=0;
+          gui->sendTime(timerSec);
           gui->consumeCmd();
         }
         if(gui->checkCommand(BACK)){

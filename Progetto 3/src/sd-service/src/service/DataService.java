@@ -40,6 +40,7 @@ public class DataService extends AbstractVerticle {
 		router.get("/api/ndeposit").handler(this::nDeposit);
 		router.get("/api/token").handler(this::sendToken);
 		router.get("/api/getdeposit").handler(this::sendDeposits);
+		router.get("/api/releaseToken").handler(this::releaseToken);
 		vertx.createHttpServer()
 			 .requestHandler(router::accept)
 			 .listen(port);
@@ -91,12 +92,20 @@ public class DataService extends AbstractVerticle {
 		response.setStatusCode(200).end();
 	}
 	
+	private void releaseToken(RoutingContext routingContext) {
+		HttpServerResponse response = routingContext.response();
+		this.tokenAvailability = true;
+		log("Token released");
+		response.setStatusCode(200).end();
+	}
+	
 	private void sendToken(RoutingContext routingContext) {
 		JsonArray arr = new JsonArray();
 		JsonObject data = new JsonObject();
 		if(this.tokenAvailability && this.availability) {
 			data.put("value", true);
 			this.tokenAvailability = false;
+			log("Token assigned");
 		}
 		else {
 			data.put("value", false);
@@ -105,7 +114,6 @@ public class DataService extends AbstractVerticle {
 		routingContext.response()
 					  .putHeader("content-type", "application/json")
 					  .end(arr.encodePrettily());
-		log("Token released");
 	}
 	
 	private void nDeposit(RoutingContext routingContext) {

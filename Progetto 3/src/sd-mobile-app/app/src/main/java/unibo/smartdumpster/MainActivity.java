@@ -35,7 +35,7 @@ import unibo.smartdumpster.utils.ChannelUtility;
 
 public class MainActivity extends AppCompatActivity {
 
-    static String URL = "http://d93d7614.ngrok.io";
+    static String URL = "http://87fbc46d.ngrok.io";
     static long TIMEOUT = 7000;
 
     Button btnConnect;
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.btnC).setEnabled(false);
                 findViewById(R.id.progress).setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(),"*TimeOut - Nessuna risposta del Controller*", Toast.LENGTH_LONG).show();
+                releaseToken();
             }
         };
     }
@@ -220,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
                             findViewById(R.id.btnA).setEnabled(false);
                             findViewById(R.id.btnB).setEnabled(false);
                             findViewById(R.id.btnC).setEnabled(false);
+                            releaseToken();
                         }
 
                         //reset gui e invio conferma al sd-service dopo aver ricevuto conferma dal controller
@@ -256,25 +258,40 @@ public class MainActivity extends AppCompatActivity {
         }).execute();
     }
 
+    private void releaseToken(){
+        final String url = URL+"/api/releaseToken";
+        Http.get(url, response -> {
+            Toast.makeText(getApplicationContext(), "*Token Rilasciato*\n", Toast.LENGTH_LONG).show();
+        });
+    }
+
     private void requestTokenGet(){
         final String url = URL+"/api/token";
-        try{
-            Http.get(url, response -> {
-                if(response.code() == HttpURLConnection.HTTP_OK){
-                    try{
-                        JSONArray arr = new JSONArray(response.contentAsString());
-                        boolean value = Boolean.parseBoolean(arr.getJSONObject(0).getString("value"));
+        Http.get(url, response -> {
+            try {
+                if (response != null) {
+                    if (response.code() == HttpURLConnection.HTTP_OK) {
+                        try {
+                            JSONArray arr = new JSONArray(response.contentAsString());
+                            boolean value = Boolean.parseBoolean(arr.getJSONObject(0).getString("value"));
 
-                        Toast.makeText(getApplicationContext(), "*Token Assegnato*", Toast.LENGTH_LONG).show();
-                        setToken(value);
-                    }catch (Exception e){
-                        Toast.makeText(getApplicationContext(), "*Errore nella Comunicazione*\n"+e.getMessage(), Toast.LENGTH_LONG).show();
+                            if(value) {
+                                Toast.makeText(getApplicationContext(), "*Token Assegnato*", Toast.LENGTH_LONG).show();
+                            }else{
+                                Toast.makeText(getApplicationContext(), "*Token Non Assegnato*", Toast.LENGTH_LONG).show();
+                            }
+                            setToken(value);
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), "*Errore nella Comunicazione*\n" + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
+                }else{
+                    Toast.makeText(getApplicationContext(), "*Errore HTTP - Server Attivo?*\n", Toast.LENGTH_LONG).show();
                 }
-            });
-        }catch (Exception e){
-            Toast.makeText(getApplicationContext(), "*Errore Generico*\n", Toast.LENGTH_LONG).show();
-        }
+            }catch(Exception e){
+                Toast.makeText(getApplicationContext(), "*Errore Generico*\n", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void setToken(boolean value){
@@ -327,6 +344,8 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "*Errore HTTP*\n" + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
+                }else{
+                    Toast.makeText(getApplicationContext(), "*Errore HTTP - Server Attivo?*\n", Toast.LENGTH_LONG).show();
                 }
                 findViewById(R.id.progress).setVisibility(View.GONE);
             }catch(Exception e){
