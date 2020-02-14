@@ -28,6 +28,10 @@ public class DataService extends AbstractVerticle {
 	private int nDeposit = 0;
 	private int totalWeight = 0;
 	
+	private static int min=100;
+	private static int max=1000;
+	private static int range = max-min+1;
+	
 	public DataService(int port) {
 		values = new LinkedList<>();		
 		this.port = port;
@@ -97,7 +101,8 @@ public class DataService extends AbstractVerticle {
 			String type = res.getString("type");
 			String date = res.getString("date");
 			//generazione randomica del peso dell'oggetto
-			int weight = (int)(Math.random() * 1100 -99 ); //da 100 a 1000 grammi
+
+			int weight = (int)(Math.random() * range + min); //da 100 a 1000 grammi
 			
 			values.addFirst(new DataPoint(type, date, weight));
 			if (values.size() > MAX_SIZE) {
