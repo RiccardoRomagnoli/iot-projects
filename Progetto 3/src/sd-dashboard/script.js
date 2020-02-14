@@ -15,7 +15,13 @@ $(document).ready(function(){
                     type: "GET",
                     url: server + "/api/getdeposit"
                 }).done(function (data) {
-                    let dateUtili = [];
+                    //dati line chart
+                    let dataCorrente = dataInizio;
+                    let pesoCorrente = 0;
+                    let nDepositiCorrente = 0;
+                    let chartDateData = [];
+
+                    //dati pie chart
                     let grammiRifiutiA = 0;
                     let grammiRifiutiB = 0;
                     let grammiRifiutiC = 0;
@@ -23,29 +29,57 @@ $(document).ready(function(){
                     let nDepositiB = 0;
                     let nDepositiC = 0;
 
+                    //ricavazione dati dalla get
                     for(let i=data.length - 1; i> -1; i--){
                         let dataValore = new Date(data[i].date);
+                        let pesoValore = data[i].weight;
                         if(dataValore >= dataInizio && dataValore <= dataFine){
+                            //parte relativa alla line chart
+                            if(dataCorrente.getTime() === dataValore.getTime()){
+                                pesoCorrente += pesoValore;
+                                nDepositiCorrente++;
+                            } else {
+                                if(pesoCorrente != 0){
+                                    chartDateData.push({x: dataCorrente, y: pesoCorrente, nDepositi: nDepositiCorrente});
+                                } 
+                                dataCorrente = dataValore;
+                                pesoCorrente = pesoValore
+                                nDepositiCorrente = 1;
+                            }
+                            //parte relativa alla pie chart
                             switch(data[i].type){
                                 case "A":
                                     nDepositiA++;
-                                    grammiRifiutiA += data[i].weight;
+                                    grammiRifiutiA += pesoValore;
                                     break;
                                 case "B":
                                     nDepositiB++;
-                                    grammiRifiutiB += data[i].weight;
+                                    grammiRifiutiB += pesoValore;
                                     break;
                                 case "C":
                                     nDepositiC++;
-                                    grammiRifiutiC += data[i].weight;
+                                    grammiRifiutiC += pesoValore;
                                     break;
                             }
                         }
                     }
+                    if(pesoCorrente != 0){
+                        chartDateData.push({x: dataCorrente, y: pesoCorrente,  nDepositi: nDepositiCorrente});
+                    }
+                    chartDate.options.data[0].dataPoints = chartDateData;
+                    chartDate.render();
 
-                    let chartTypeData = [{ y: grammiRifiutiA, nDepositi: nDepositiA, indexLabel:"Grammi A"},
-                                         { y: grammiRifiutiB, nDepositi: nDepositiB, indexLabel:"Grammi B"},
-                                         { y: grammiRifiutiC, nDepositi: nDepositiC, indexLabel:"Grammi C"}];
+                    //riempimento pie chart
+                    let chartTypeData = [];
+                    if(nDepositiA > 0){
+                        chartTypeData.push({ y: grammiRifiutiA, nDepositi: nDepositiA, indexLabel:"Grammi A"});
+                    }
+                    if(nDepositiB > 0){
+                        chartTypeData.push({ y: grammiRifiutiB, nDepositi: nDepositiB, indexLabel:"Grammi B"});
+                    }
+                    if(nDepositiC > 0){
+                        chartTypeData.push({ y: grammiRifiutiC, nDepositi: nDepositiC, indexLabel:"Grammi C"});
+                    }
                     chartType.options.data[0].dataPoints = chartTypeData;
                     chartType.render();
                 });
@@ -92,10 +126,6 @@ $(document).ready(function(){
         //eventuale aggiornamento istantaneo dei valori di sopra
     });
 
-    function compareDataPointYDescend(dataPoint1, dataPoint2) {
-            return dataPoint2.x - dataPoint1.x;
-    }
-
     var chartDate = new CanvasJS.Chart("chartDate", {
         theme: "light2",
         animationEnabled: true,
@@ -103,35 +133,30 @@ $(document).ready(function(){
             text: "Deposito totale giornalieri"   
         },
         axisX: {
-
+            title: "Date dei depositi",
+            valueFormatString: "DD MMM"
         },
         axisY:{
-            title: "Depositi giornalieri",
-            valueFormatString: "$#0"
+            title: "Grammi giornalieri",
+            suffix: "g",
+        },
+        legend:{
+            cursor:"pointer",
+            verticalAlign: "bottom",
+            horizontalAlign: "left",
+            dockInsidePlotArea: true,
         },
         data: [{        
             type: "line",
-            markerSize: 12,
-            xValueFormatString: "MMM, YYYY",
-            yValueFormatString: "##.## Kg",
-            dataPoints: [        
-                { x: new Date(2016, 00, 1), y: 61, indexLabel: "gain", markerType: "triangle",  markerColor: "#6B8E23" },
-                { x: new Date(2016, 01, 10), y: 71, indexLabel: "gain", markerType: "triangle",  markerColor: "#6B8E23" },
-                { x: new Date(2016, 05, 31) , y: 55, indexLabel: "loss", markerType: "cross", markerColor: "tomato" },
-                { x: new Date(2016, 03, 21) , y: 50, indexLabel: "loss", markerType: "cross", markerColor: "tomato" },
-                { x: new Date(2016, 07, 11) , y: 65, indexLabel: "gain", markerType: "triangle", markerColor: "#6B8E23" },
-                { x: new Date(2016, 05, 12) , y: 85, indexLabel: "gain", markerType: "triangle", markerColor: "#6B8E23" },
-                { x: new Date(2016, 04, 31) , y: 68, indexLabel: "loss", markerType: "cross", markerColor: "tomato" },
-                { x: new Date(2016, 03, 11) , y: 28, indexLabel: "loss", markerType: "cross", markerColor: "tomato" },
-                { x: new Date(2016, 06, 19) , y: 34, indexLabel: "gain", markerType: "triangle", markerColor: "#6B8E23" },
-                { x: new Date(2016, 08, 16) , y: 24, indexLabel: "loss", markerType: "cross", markerColor: "tomato" },
-                { x: new Date(2016, 10, 14) , y: 44, indexLabel: "gain", markerType: "triangle", markerColor: "#6B8E23" },
-                { x: new Date(2016, 11, 21) , y: 34, indexLabel: "loss", markerType: "cross", markerColor: "tomato" }
-            ]
+            showInLegend: true,
+            name: "Quantità giornaliere di rifiuti",
+            markerType: "square",
+            xValueFormatString: "DD MMM, YYYY",
+            color: "#F08080",
+            yValueFormatString: "####g",
+            toolTipContent: "{x} - {y} - {nDepositi}"
         }]
     });
-    chartDate.options.data[0].dataPoints.sort(compareDataPointYDescend);
-    chartDate.render();
 
     var chartType = new CanvasJS.Chart("chartType",
 	{
