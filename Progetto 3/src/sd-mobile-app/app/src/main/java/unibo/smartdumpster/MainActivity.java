@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     private void releaseToken(){
         final String url = URL+"/api/releaseToken";
         Http.get(url, response -> {
-            Toast.makeText(getApplicationContext(), "*Token Rilasciato*\n", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "*Token Rilasciato*\n", Toast.LENGTH_LONG).show();
         });
     }
 

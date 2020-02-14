@@ -21,7 +21,7 @@ import java.util.Set;
 public class DataService extends AbstractVerticle {
 
 	private int port;
-	private static final int MAX_SIZE = 10;
+	private static final int MAX_SIZE = 100;
 	private LinkedList<DataPoint> values;
 	private boolean tokenAvailability = true;
 	private boolean availability = true;
@@ -51,7 +51,7 @@ public class DataService extends AbstractVerticle {
 		vertx.createHttpServer()
 			 .requestHandler(router::accept)
 			 .listen(port);
-
+		storicData();
 		log("Service ready.");
 	}
 	
@@ -72,6 +72,19 @@ public class DataService extends AbstractVerticle {
         allowedMethods.add(HttpMethod.POST);
         allowedMethods.add(HttpMethod.OPTIONS);
         router.route().handler(CorsHandler.create(".*.").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
+    }
+    
+    private void storicData() {
+		values.addFirst(new DataPoint("A", "2020-02-05", 754));
+		values.addFirst(new DataPoint("A", "2020-02-07", 212));
+		values.addFirst(new DataPoint("A", "2020-02-07", 365));
+		values.addFirst(new DataPoint("A", "2020-02-10", 589));
+		values.addFirst(new DataPoint("B", "2020-02-11", 458));
+		values.addFirst(new DataPoint("B", "2020-02-12", 658));
+		values.addFirst(new DataPoint("C", "2020-02-13", 885));
+		values.addFirst(new DataPoint("C", "2020-02-14", 125));
+		values.addFirst(new DataPoint("C", "2020-02-14", 963));
+		values.addFirst(new DataPoint("A", "2020-02-14", 385));
     }
 	
 	//POST
@@ -101,7 +114,6 @@ public class DataService extends AbstractVerticle {
 	//POST
 	private void setAvailability(RoutingContext routingContext) {
 		HttpServerResponse response = routingContext.response();
-		log(routingContext.getBodyAsString());
 		JsonObject res = routingContext.getBodyAsJson();
 		if (res == null) {
 			sendError(400, response);
