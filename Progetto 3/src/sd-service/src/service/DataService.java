@@ -2,14 +2,17 @@ package service;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.CorsHandler;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 /*
  * Data Service as a vertx event-loop 
@@ -32,7 +35,15 @@ public class DataService extends AbstractVerticle {
 	@Override
 	public void start() {		
 		Router router = Router.router(vertx);
-		router.route().handler(BodyHandler.create());
+		router.route().handler(CorsHandler.create(".*.")
+					  .allowedMethod(io.vertx.core.http.HttpMethod.GET)
+					  .allowedMethod(io.vertx.core.http.HttpMethod.POST)
+					  .allowedMethod(io.vertx.core.http.HttpMethod.OPTIONS)
+					  .allowCredentials(true)
+					  .allowedHeader("Access-Control-Allow-Method")
+					  .allowedHeader("Access-Control-Allow-Origin")
+					  .allowedHeader("Access-Control-Allow-Credentials")
+					  .allowedHeader("Content-Type"));
 
 		//SmartDumpster Server API
 		router.post("/api/dodeposit").handler(this::doDeposit);
@@ -49,6 +60,25 @@ public class DataService extends AbstractVerticle {
 
 		log("Service ready.");
 	}
+	
+	/**
+     * Add CORS handler to the Router, this is a generic handler which work for
+     * every origin, just for testing purpose.
+     * 
+     * @param router
+     */
+    private void addCorsPermissios(final Router router) {
+        Set<String> allowedHeaders = new HashSet<>();
+        allowedHeaders.add("Access-Control-Allow-Origin");
+        allowedHeaders.add("origin");
+        allowedHeaders.add("Content-Type");
+        allowedHeaders.add("accept");
+        Set<HttpMethod> allowedMethods = new HashSet<>();
+        allowedMethods.add(HttpMethod.GET);
+        allowedMethods.add(HttpMethod.POST);
+        allowedMethods.add(HttpMethod.OPTIONS);
+        router.route().handler(CorsHandler.create(".*.").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
+    }
 	
 	//POST
 	private void doDeposit(RoutingContext routingContext) {
