@@ -164,7 +164,7 @@ public class DataService extends AbstractVerticle {
 	private void isAvailable(RoutingContext routingContext) {
 		JsonArray arr = new JsonArray();
 		JsonObject data = new JsonObject();
-		data.put("value", this.availability);
+		data.put("value", "" + this.availability + "");
 		arr.add(data);
 		routingContext.response()
 					  .putHeader("content-type", "application/json")

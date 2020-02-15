@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         //rilascio token e abilito btntocken e blocco i tre pulsanti A B C
         resetUI();
+        releaseToken();
     }
 
     private void initUI() {

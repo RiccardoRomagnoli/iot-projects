@@ -32,7 +32,7 @@ void setup() {
   ledErr = new Led(LEDERR_PIN);
   pot = new Potenziometro(POT_PIN);
 
-  maxWeight = pot->readPotenziometro() * 1000;
+  maxWeight = pot->readPotenziometro();
   stato = AVAILABLE;
 
   ledOk->switchOn();
@@ -76,7 +76,7 @@ int sendData(String address, String apiMethod, String key, String value){
     http.begin(client, address + "/api/" + apiMethod);      //Specify request destination
     http.addHeader("Content-Type", "application/json");  //Specify content-type header
   
-    String msg = "{ \"" + key + "\":\"" + value + "\" }";
+    String msg = "{ \"" + key + "\":" + value + " }";
     httpCode = http.POST(msg);   //Send the request
     String payload = http.getString();                  //Get the response payload
   
@@ -129,7 +129,7 @@ int setAvailable(String stato){
 int getTotalWeight(){
   String dati = getData(address, "ndeposit");
   String risposta = extractJSONfromArray(dati);
-  const size_t CAPACITY = JSON_OBJECT_SIZE(1);
+  const size_t CAPACITY = JSON_OBJECT_SIZE(4);
   StaticJsonDocument<CAPACITY> doc;
 
   // deserialize the object
@@ -137,7 +137,7 @@ int getTotalWeight(){
 
   // extract the data
   JsonObject object = doc.as<JsonObject>();
-  const int peso = object["weight"];
+  int peso = object["weight"];
   
   return peso;
 }
@@ -166,6 +166,7 @@ void loop() {
     checkStato();
   } else if(stato == NOTAVAILABLE && isAvailable()) {
     stato = AVAILABLE;
+    pesoAttuale = getTotalWeight();
     checkStato();
   } else if(stato == AVAILABLE && pesoAttuale > maxWeight){
     stato = NOTAVAILABLE;
@@ -174,6 +175,7 @@ void loop() {
   } else if(stato == AVAILABLE && pesoAttuale <= maxWeight){
     pesoAttuale = getTotalWeight();
     Serial.println(pesoAttuale);
+    Serial.println(maxWeight);
   }
   delay(1000);
 }
