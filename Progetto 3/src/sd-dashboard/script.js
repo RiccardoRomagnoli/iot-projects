@@ -100,8 +100,8 @@ $(document).ready(function(){
             type: "GET",
             url: server + "/api/isAvailable"
         }).done(function (data) {
-            $("#statoBidoneAttuale").val(data[0].value ? "Disponibile" : "Non disponibile");
-            $("#toggleStatoBidoneAttuale").prop("checked", data[0].value ? true : false);
+            $("#statoBidoneAttuale").val(data[0].value == "true" ? "Disponibile" : "Non disponibile");
+            $("#toggleStatoBidoneAttuale").prop("checked", data[0].value == "true" ? true : false);
         });
 
         setTimeout(checkStats, 2000);
