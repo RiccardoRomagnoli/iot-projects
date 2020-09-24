@@ -35,7 +35,7 @@ import unibo.smartdumpster.utils.ChannelUtility;
 
 public class MainActivity extends AppCompatActivity {
 
-    static String URL = "http://194aa522.ngrok.io";
+    static String URL = "TODO";
     static long TIMEOUT = 7000;
 
     Button btnConnect;

@@ -14,11 +14,11 @@ Light* ledErr;
 Light* ledOk;
 
 /* wifi network name */
-String ssidName = "FASTWEB-enzo-2,4";
+String ssidName = "TODO";
 /* WPA2 PSK password */
-String pwd = "casaenzo2017";
+String pwd = "TODO";
 /* service IP address */ 
-String address = "http://194aa522.ngrok.io";
+String address = "TODO";
 /*STATO BIDONE */
 enum { AVAILABLE, NOTAVAILABLE} stato;
 /*Wmax*/

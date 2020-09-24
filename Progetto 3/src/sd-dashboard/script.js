@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    const server = "https://194aa522.ngrok.io";
+    const server = "TODO";
     const dataPickr = flatpickr("#myDataPickr", {
         mode: "range",
         dateFormat: "d-m-Y",
